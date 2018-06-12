@@ -29,11 +29,10 @@ class Utente(models.Model):
 class Biglietto(models.Model):
     nome = models.CharField('Nome Biglietto', max_length=50)
     validitaGiorni = models.SmallIntegerField('Giorni di validità')
-    costo = models.FloatField('Costo Biglietto')
+    costo = models.DecimalField('Costo Biglietto', max_digits=5, decimal_places=2, default=1.50)
     tipologia = models.CharField('Tipo Biglietto', choices=tipo_biglietto)
 
 class Transazione(models.Model):
-
     data = models.DateTimeField ('Data Acquisto', default=datetime.datetime.now())
-    costo = models.FloatField ('Totale Transazione')
-tipo = models.CharField('Tipo Biglietto', choices=tipo_biglietto)
+    costo = models.DecimalField('Totale Transazione', max_digits=5, decimal_places=2)
+    tipo = models.CharField('Tipo Biglietto', choices=tipo_biglietto)
