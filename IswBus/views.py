@@ -1,8 +1,11 @@
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.db import models
 
-def hello(request):
-    return HttpResponse("Hello world")
+from IswBus.models import Biglietto
 
-def signup(request):
-    return
+def tickets_view(request):
+    """A view of all purchasable tickets"""
+    tickets=models.Biglietto.objects.all()
+    return render(request, 'available_tickets.html', {'tickets':tickets})
+

@@ -23,17 +23,17 @@ class CartaDiCredito(models.Model):
 class Utente(models.Model):
     username = models.CharField("Username", max_length=50)
     password = models.CharField("Password", max_length=50)
-    cartaCredito = models.ForeignKey ("Carta di Credito", CartaDiCredito)
+    cartaCredito = models.ForeignKey (CartaDiCredito, "Carta di Credito")
 
 
 class Biglietto(models.Model):
     nome = models.CharField('Nome Biglietto', max_length=50)
     validitaGiorni = models.SmallIntegerField('Giorni di validità')
     costo = models.DecimalField('Costo Biglietto', max_digits=5, decimal_places=2, default=1.50)
-    tipologia = models.CharField('Tipo Biglietto', choices=tipo_biglietto)
+    tipologia = models.CharField('Tipo Biglietto', choices=tipo_biglietto, max_length=2)
 
 
 class Transazione(models.Model):
     data = models.DateTimeField ('Data Acquisto', default=timezone.now)
     costo = models.DecimalField('Totale Transazione', max_digits=5, decimal_places=2)
-    tipo = models.CharField('Tipo Biglietto', choices=tipo_biglietto)
+    tipo_biglietto = models.CharField('Tipo Biglietto', choices=tipo_biglietto, max_length=2)

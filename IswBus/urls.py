@@ -18,6 +18,5 @@ from IswBus import views
 
 urlpatterns = [
     url(r'admin/', admin.site.urls),
-    url(r'^hello/', views.hello),
-    url(r'^signup/$', views.signup, name='signup'),
+    url(r'^tickets/$', views.tickets_view, name='tickets'),
 ]

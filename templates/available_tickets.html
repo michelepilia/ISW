@@ -1,0 +1,17 @@
+<html>
+    <head>
+        <title>Biglietti Disponibili</title>
+    </head>
+
+    <body>
+        <h1>Biglietti Disponibili</h1>
+
+        <ul>
+            {% for ticket in tickets%}
+                <li>
+                    <h2><a href="{%   ticket.buy() %}"></a></h2>
+                </li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>
