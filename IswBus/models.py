@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import permalink
 from django.urls import reverse
-import datetime
+from django.utils import timezone
 
 tipo_biglietto = (
         ('1', 'Abbonamento Mensile'),
@@ -32,7 +32,8 @@ class Biglietto(models.Model):
     costo = models.DecimalField('Costo Biglietto', max_digits=5, decimal_places=2, default=1.50)
     tipologia = models.CharField('Tipo Biglietto', choices=tipo_biglietto)
 
+
 class Transazione(models.Model):
-    data = models.DateTimeField ('Data Acquisto', default=datetime.datetime.now())
+    data = models.DateTimeField ('Data Acquisto', default=timezone.now)
     costo = models.DecimalField('Totale Transazione', max_digits=5, decimal_places=2)
     tipo = models.CharField('Tipo Biglietto', choices=tipo_biglietto)
