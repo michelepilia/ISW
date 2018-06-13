@@ -23,7 +23,7 @@ class CartaDiCredito(models.Model):
 class Utente(models.Model):
     username = models.CharField("Username", max_length=50)
     password = models.CharField("Password", max_length=50)
-    cartaCredito = models.ForeignKey (CartaDiCredito, "Carta di Credito")
+    cartaCredito = models.ForeignKey (CartaDiCredito, on_delete=models.DO_NOTHING)
 
 
 class Biglietto(models.Model):

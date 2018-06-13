@@ -17,6 +17,7 @@ from django.conf.urls import url
 from IswBus import views
 
 urlpatterns = [
-    url(r'admin/', admin.site.urls),
-    url(r'^tickets/$', views.tickets_view, name='tickets'),
-]
+    url(r'^admin/', admin.site.urls),
+    url(r'^tickets/', views.tickets_view, name='tickets'),
+    url(r'^$', views.tickets_view, name='tickets'),
+    ]
