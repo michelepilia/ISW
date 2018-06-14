@@ -20,11 +20,18 @@ class CartaDiCredito(models.Model):
     anno_scadenza = models.SmallIntegerField("Anno di Scadenza")
     cvv = models.CharField("Codice CVV", max_length=3)
 
+    def __unicode__(self):
+        return "Carta di Credito %s; Scadenza: %d/%d" %(self.numero, self.mese_scadenza, self.anno_scadenza)
+
 class Utente(models.Model):
+    nome = models.CharField("Nome", max_length=50)
+    cognome = models.CharField("Cognome", max_length=50)
     username = models.CharField("Username", max_length=50)
     password = models.CharField("Password", max_length=50)
     cartaCredito = models.ForeignKey (CartaDiCredito, on_delete=models.DO_NOTHING)
 
+    def __unicode__(self):
+        return "%s %s (%s)" %(self.nome, self.cognome, self.username)
 
 class Biglietto(models.Model):
     nome = models.CharField('Nome Biglietto', max_length=50)
@@ -32,8 +39,13 @@ class Biglietto(models.Model):
     costo = models.DecimalField('Costo Biglietto', max_digits=5, decimal_places=2, default=1.50)
     tipologia = models.CharField('Tipo Biglietto', choices=tipo_biglietto, max_length=2)
 
+    def __unicode__(self):
+        return "%s (Tipo: %s, Validita: %d giorni) Prezzo: %d €" %(self.nome, self.tipologia, self.validitaGiorni, self.costo)
 
 class Transazione(models.Model):
     data = models.DateTimeField ('Data Acquisto', default=timezone.now)
     costo = models.DecimalField('Totale Transazione', max_digits=5, decimal_places=2)
-    tipo_biglietto = models.CharField('Tipo Biglietto', choices=tipo_biglietto, max_length=2)
+    biglietto = models.ForeignKey(Biglietto, on_delete=models.DO_NOTHING)
+
+    def __unicode__(self):
+        return "%s, %s, %d" %(self.data, self.biglietto, self.costo)
