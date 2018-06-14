@@ -20,4 +20,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^tickets/', views.tickets_view, name='tickets'),
     url(r'^$', views.tickets_view, name='tickets'),
+    url(r'^ticket/(?P<ticketId>\d+)/', views.buy_ticket, name="buy-ticket"),
     ]

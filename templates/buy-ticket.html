@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Acquista Biglietto</title>
+</head>
+<body>
+    <h1>Acquista Biglietto</h1>
+
+    <h2>Dati Biglietto: </h2>
+
+    <ul>
+        <li>Nome biglietto: {{ ticket.nome }}</li>
+        <li>Giorni di validita: {{ ticket.validitaGiorni }}</li>
+        <li>Tipologia: {{ ticket.tipologia }}</li>
+        <li>Costo: {{ ticket.costo }}</li>
+    </ul>
+
+    <form action="/transaction/create" method="post">
+        {% csrf_token %}
+
+        {{ form }}
+
+        <input type="submit" value="Submit"/>
+    </form>
+</body>
+</html>

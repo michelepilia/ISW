@@ -6,12 +6,23 @@
     <body>
         <h1>Biglietti Disponibili</h1>
 
-        <ul>
-            {% for ticket in tickets%}
-                <li>
-                    <h2><a href="#">ticket.</a></h2>
-                </li>
+        <table>
+            <tr>
+                <th>Biglietto</th>
+                <th>Tipo</th>
+                <th>Costo</th>
+            </tr>
+
+            {% for ticket in tickets %}
+                <tr>
+                    <td><a href="{{ ticket.get_url }}">{{ ticket.nome }}</a></td>
+                    <td>{{ ticket.tipologia }}</td>
+                    <td>{{ ticket.costo }}</td>
+                </tr>
             {% endfor %}
+        </table>
+
+        <ul>
         </ul>
     </body>
 </html>
