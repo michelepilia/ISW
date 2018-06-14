@@ -28,7 +28,7 @@ class Utente(models.Model):
     cognome = models.CharField("Cognome", max_length=50)
     username = models.CharField("Username", max_length=50)
     password = models.CharField("Password", max_length=50)
-    cartaCredito = models.ForeignKey (CartaDiCredito, on_delete=models.DO_NOTHING)
+    cartaCredito = models.ForeignKey(CartaDiCredito, on_delete=models.DO_NOTHING)
 
     def __unicode__(self):
         return "%s %s (%s)" %(self.nome, self.cognome, self.username)
