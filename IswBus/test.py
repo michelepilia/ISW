@@ -20,7 +20,7 @@ class ModelTest(TestCase):
         mastercardPilia2.save()
         # mastercardPiliaErrata.save()
 
-        acquisto01 = Transazione(data= datetime.datetime(2018, 6, 14, 15, 30, 00), costo=05.02, tipo_biglietto='3')
+        acquisto01 = Transazione(data=datetime(2018, 6, 14, 15, 30, 00), costo=05.02, tipo_biglietto='3')
         acquisto01.save()
 
         sior_pilia = Utente(nome='Michele', cognome='Pilia', username='pilia96', password='macbook', cartaCredito=mastercardPilia)
