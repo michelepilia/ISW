@@ -17,23 +17,22 @@ def buy_ticket(request, ticketId):
     except Biglietto.DoesNotExist:
         book = None
 
-    if request.method == "POST":
+    #if request.method == "POST":
         current_user = request.user
         creditForm = CreditCardForm(request.POST)
-        if CreditCardForm.is_valid():
-            newCard = CreditCardForm(numero=authorForm.cleaned_data['author_name'],
-                               mese_scadenza=authorForm.cleaned_data['author_surname'],
-                                     ,
-                                        )
-            newCard.save()
-            return HttpResponse("Author saved!!")
-    else:
-        authorForm = AuthorForm()
+        #if CreditCardForm.is_valid():
+         #   newCardForm = CreditCardForm(numero=CreditCardForm.cleaned_data['author_name'],
+          #                     mese_scadenza=CreditCardForm.cleaned_data['author_surname'],
+                                        #)
+           # newCardForm.save()
+          #  return HttpResponse("Author saved!!")
+    #else:
+        #newCardForm = CreditCardForm()
 
     return render(request,
                   "buy-ticket.html",
                   {
                       'ticket': ticket,
                       'ticketId': ticketId,
-                      'form': creditCardForm
+                      #'form': newCardForm
                   })
