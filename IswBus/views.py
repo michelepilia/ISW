@@ -1,38 +1,32 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db import models
 from IswBus.models import Biglietto
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+
 
 from IswBus.models import *
 from IswBus.forms import *
 
+@login_required
 def tickets_view(request):
     """A view of all purchasable tickets"""
     tickets=Biglietto.objects.all()
     return render(request, 'available_tickets.html', {'tickets':tickets})
 
-def buy_ticket(request, ticketId):
-    try:
-        ticket = Biglietto.objects.get(pk=ticketId)
-    except Biglietto.DoesNotExist:
-        book = None
 
-    #if request.method == "POST":
-        current_user = request.user
-        creditForm = CreditCardForm(request.POST)
-        #if CreditCardForm.is_valid():
-         #   newCardForm = CreditCardForm(numero=CreditCardForm.cleaned_data['author_name'],
-          #                     mese_scadenza=CreditCardForm.cleaned_data['author_surname'],
-                                        #)
-           # newCardForm.save()
-          #  return HttpResponse("Author saved!!")
-    #else:
-        #newCardForm = CreditCardForm()
-
-    return render(request,
-                  "buy-ticket.html",
-                  {
-                      'ticket': ticket,
-                      'ticketId': ticketId,
-                      #'form': newCardForm
-                  })
+def signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('tickets')
+    else:
+        form = UserCreationForm()
+    return render(request, 'signup.html', {'form': form})

@@ -19,6 +19,7 @@ from IswBus import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^tickets/', views.tickets_view, name='tickets'),
-    url(r'^$', views.tickets_view, name='tickets'),
-    url(r'^ticket/(?P<ticketId>\d+)/', views.buy_ticket, name="buy-ticket"),
+    url(r'^$', views.signup, name='signup'),
+    #url(r'^ticket/(?P<ticketId>\d+)/', views.buy_ticket, name="buy-ticket"),
+    url(r'^signup/', views.signup, name='signup')
     ]
