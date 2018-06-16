@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bus Ticket ISW</title>
+</head>
+<body>
+
+    <header>
+        <h1>ISW Bus Ticket</h1>
+        <ul>
+            <li>Sei un nuovo utente? <a href="/signup">Registrati!</a></li>
+        </ul>
+    </header>
+
+
+  <h2>Login</h2>
+  <form method="post" action="tickets/">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Login</button>
+  </form>
+</body>
+</html>

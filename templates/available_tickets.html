@@ -1,9 +1,8 @@
-<html>
-    <head>
-        <title>Biglietti Disponibili</title>
-    </head>
 
-    <body>
+{% extends 'base.html' %}
+
+{% block content %}
+
         <h1>Biglietti Disponibili</h1>
 
         <table>
@@ -21,8 +20,4 @@
                 </tr>
             {% endfor %}
         </table>
-
-        <ul>
-        </ul>
-    </body>
-</html>
+{% endblock %}
