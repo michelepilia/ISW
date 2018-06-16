@@ -13,18 +13,19 @@ class ModelTest(TestCase):
         dodiciCorse = Biglietto(nome='dodiciCorse', validitaGiorni=10, costo=2.00, tipologia='3')
         dodiciCorse.save()
 
-        mastercardPilia = CartaDiCredito(numero='0123456789012345', mese_scadenza=1, anno_scadenza=21, cvv='123')
+        sior_pilia = Utente(nome='Michele', cognome='Pilia', username='pilia96', password='macbook')
+        sior_pilia.save()
+
+        mastercardPilia = CartaDiCredito(numero='0123456789012345', mese_scadenza=1, anno_scadenza=21, cvv='123', user=sior_pilia)
         mastercardPilia2 = CartaDiCredito(numero='5432109876543210', mese_scadenza=2, anno_scadenza=22, cvv='321')
         #mastercardPiliaErrata = CartaDiCredito(numero='54321098765432109', mese_scadenza=02, anno_scadenza=22, cvv='321')
         mastercardPilia.save()
         mastercardPilia2.save()
         # mastercardPiliaErrata.save()
 
-        acquisto01 = Transazione(data=datetime(2018, 6, 14, 15, 30, 00), costo=05.02, tipo_biglietto='3')
+        acquisto01 = Transazione(data=datetime(2018, 6, 14, 15, 30, 00), costo=05.02, tipo_biglietto='3', utente=sior_pilia, cartaDiCredito=mastercardPilia)
         acquisto01.save()
 
-        sior_pilia = Utente(nome='Michele', cognome='Pilia', username='pilia96', password='macbook', cartaCredito=mastercardPilia)
-        sior_pilia.save()
 
     def testFindModels(self):
         self.assertEqual(len(Biglietto.object.all()), 1)

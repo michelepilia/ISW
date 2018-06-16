@@ -22,6 +22,8 @@ urlpatterns = [
     url(r'^tickets/', views.tickets_view, name='tickets'),
     url(r'^$', auth_views.login, name='login'),
     url(r'^login/', auth_views.login, name='login'),
-    #url(r'^ticket/(?P<ticketId>\d+)/', views.buy_ticket, name="buy-ticket"),
-    url(r'^signup/', views.signup, name='signup')
+    url(r'^ticket/(?P<ticketId>\d+)/', views.paymentTransactionView, name="buy-ticket"),
+    url(r'^signup/', views.signup, name='signup'),
+    url(r'^accounts/login/$', auth_views.login, name='login'),
+    url(r'^accounts/profile/', views.tickets_view, name='tickets')
     ]
