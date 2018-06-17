@@ -30,12 +30,12 @@ def signup(request):
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
-            nome = user_form.cleaned_data['nome']
-            cognome = user_form.cleaned_data['cognome']
-            card_number = add_card_form.cleaned_data['card_number']
-            expiration_month = add_card_form.cleaned_data['expiration_month']
-            expiration_year = add_card_form.cleaned_data['expiration_year']
-            cvv = add_card_form.cleaned_data['cvv']
+            nome = user_form.cleaned_data.get('nome')
+            cognome = user_form.cleaned_data.get('cognome')
+            card_number = add_card_form.cleaned_data.get('card_number')
+            expiration_month = add_card_form.cleaned_data.get('expiration_month')
+            expiration_year = add_card_form.cleaned_data.get('expiration_year')
+            cvv = add_card_form.cleaned_data.get('cvv')
             login(request, user)
             sub_user = Utente(django_user=user, nome=nome, cognome=cognome)
             credit_card = CartaDiCredito(numero=card_number, mese_scadenza=expiration_month, anno_scadenza=expiration_year, cvv=cvv, user=sub_user)

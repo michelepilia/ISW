@@ -32,7 +32,7 @@ class CartaDiCredito(models.Model):
     mese_scadenza = models.SmallIntegerField("Mese di Scadenza", default=datetime.now().month)
     anno_scadenza = models.SmallIntegerField("Anno di Scadenza", default=datetime.now().year)
     cvv = models.CharField("Codice CVV", max_length=3, default="123")
-    user = models.ForeignKey(Utente, on_delete=models.CASCADE, default=Utente())
+    user = models.ForeignKey(Utente, on_delete=models.CASCADE, default=1)
 
     def get_full_name(self):
         return "Carta di Credito %s; Scadenza: %d/%d" % (self.numero, self.mese_scadenza, self.anno_scadenza)
@@ -58,7 +58,7 @@ class Transazione(models.Model):
     data = models.DateTimeField('Data Acquisto', default=timezone.now)
     costo = models.DecimalField('Totale Transazione', max_digits=5, decimal_places=2, default=1.30)
     biglietto = models.ForeignKey(Biglietto, on_delete=models.DO_NOTHING, default=Biglietto())
-    utente = models.ForeignKey(Utente, on_delete=models.CASCADE, default=Utente())
+    utente = models.ForeignKey(Utente, on_delete=models.CASCADE, default=1)
     cartaDiCredito = models.ForeignKey(CartaDiCredito, on_delete=models.DO_NOTHING, default=CartaDiCredito())
 
     def __unicode__(self):
