@@ -17,22 +17,12 @@ tipo_biglietto = (
 
 
 @deconstructible
-class Utente(models.Model):
-    django_user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
-    nome = models.CharField("Nome", max_length=50, default="Nome")
-    cognome = models.CharField("Cognome", max_length=50, default="Cognome")
-
-    def __unicode__(self):
-        return "%s %s (%s)" % (self.nome, self.cognome, self.username)
-
-
-@deconstructible
 class CartaDiCredito(models.Model):
-    numero = models.CharField("Numero Carta di Credito", max_length=16, default="1111222233334444")
+    numero = models.CharField("Numero Carta di Credito", max_length=16, default="1111222233334444", unique=True)
     mese_scadenza = models.SmallIntegerField("Mese di Scadenza", default=datetime.now().month)
     anno_scadenza = models.SmallIntegerField("Anno di Scadenza", default=datetime.now().year)
     cvv = models.CharField("Codice CVV", max_length=3, default="123")
-    user = models.ForeignKey(Utente, on_delete=models.CASCADE, default=1)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
 
     def get_full_name(self):
         return "Carta di Credito %s; Scadenza: %d/%d" % (self.numero, self.mese_scadenza, self.anno_scadenza)
@@ -58,7 +48,7 @@ class Transazione(models.Model):
     data = models.DateTimeField('Data Acquisto', default=timezone.now)
     costo = models.DecimalField('Totale Transazione', max_digits=5, decimal_places=2, default=1.30)
     biglietto = models.ForeignKey(Biglietto, on_delete=models.DO_NOTHING, default=Biglietto())
-    utente = models.ForeignKey(Utente, on_delete=models.CASCADE, default=1)
+    utente = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     cartaDiCredito = models.ForeignKey(CartaDiCredito, on_delete=models.DO_NOTHING, default=CartaDiCredito())
 
     def __unicode__(self):

@@ -1,0 +1,15 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+        <h1>Aggiungi Carta di Credito</h1>
+
+        <form method="post" action="/add_card/">
+            {% csrf_token %}
+            {{ form }}
+            <button type="submit">Salva</button>
+        </form>
+
+
+{% endblock %}
