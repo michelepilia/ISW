@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+        <h1>Carte di Credito</h1>
+
+        <table>
+            <tr>
+                <th>Numero</th>
+                <th>Mese di Scadenza</th>
+                <th>Anno di Scadenza</th>
+            </tr>
+
+            {% for card in cards %}
+                <tr>
+                    <td><a href="{{ card.get_url }}">{{ card.numero }}</a></td>
+                    <td>{{ card.mese_scadenza }}</td>
+                    <td>{{ card.anno_scadenza }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        <a href="/add_card/"><button type="button">Aggiungi Carta</button></a>
+
+{% endblock %}

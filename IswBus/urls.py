@@ -25,5 +25,7 @@ urlpatterns = [
     url(r'^ticket/(?P<ticketId>\d+)/', views.buy_ticket, name="buy-ticket"),
     url(r'^signup/', views.signup, name='signup'),
     url(r'^add_card/', views.add_card, name='add-card'),
-    url(r'^logout/', views.logout_view, name='logout')
+    url(r'^logout/', views.logout_view, name='logout'),
+    url(r'^cards/', views.cards, name='manage-card')
+
 ]

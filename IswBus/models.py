@@ -27,6 +27,9 @@ class CartaDiCredito(models.Model):
     def get_full_name(self):
         return "Carta di Credito %s; Scadenza: %d/%d" % (self.numero, self.mese_scadenza, self.anno_scadenza)
 
+    def get_url(self):
+        return "#"
+
 
 @deconstructible
 class Biglietto(models.Model):

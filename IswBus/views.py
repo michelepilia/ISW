@@ -42,6 +42,7 @@ def buy_ticket(request, ticketId):
 def add_card(request):
     if request.method == 'POST':
         form = CreditCardForm(request.POST)
+        print("is valid?")
         if form.is_valid():
             card_number = form.cleaned_data['card_number']
             expiration_month = form.cleaned_data['expiration_month']
@@ -58,9 +59,11 @@ def add_card(request):
             except IntegrityError:
                 return render_to_response("error.html", {"message": "Carta di credito già esistente"})
 
-            return redirect('tickets')
+            return redirect('/cards/')
     else:
+        print("else pre")
         form = CreditCardForm()
+        print("else post")
     return render(request, 'add-card.html', {'form': form})
 
 
@@ -71,3 +74,9 @@ def logout_view(request):
     print(2)
     #return render(request, 'login.html', {})
     return HttpResponseRedirect('login')
+
+
+def cards(request):
+    user = request.user
+    cards = CartaDiCredito.objects.filter(user_id=user.id)
+    return render(request, "cards.html", {'cards': cards})
