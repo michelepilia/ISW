@@ -33,12 +33,6 @@ def signup(request):
 
 
 @login_required
-def buy_ticket(request, ticketId):
-    ticket = Biglietto.objects.get(pk=ticketId)
-    return render(request, 'buy-ticket.html', {'ticket': ticket})
-
-
-@login_required
 def add_card(request):
     if request.method == 'POST':
         form = CreditCardForm(request.POST)
@@ -115,29 +109,25 @@ def edit_card(request, cardId):
     return render(request, 'edit-card.html', {'form': form, 'card': card})
 
 
+@login_required
 def buy_ticket_view(request, ticketId):
-    ticket=Biglietto.objects.get(pk=ticketId)
-    if request.method=='POST':
-        form = BuyTicketForm(request.POST)
+    if request.user.is_authenticated:
+        user = request.user
+    else:
+        user = None
+    ticket = Biglietto.objects.get(pk=ticketId)
+    if request.method == 'POST':
+        form = BuyTicketForm(request.POST, initial={'carta':CartaDiCredito.objects.filter(user_id=request.user.id)})
         if form.is_valid():
-            quantita = form.cleaned_data['quantita']
-            tot = quantita*ticket.costo
-            data = timezone.now
-            if request.user.is_authenticated:
-                user1 = request.user
-            else:
-                user1 = None
-            carta = form.cleaned_data['carta']
-            transazione = Transazione(data=data, costo=tot, biglietto=ticket,
-                                      utente=user1, cartaDiCredito=carta)
+            card = form.cleaned_data['carta']
             try:
-                transazione.save()
+                Transazione(data=timezone.now, costo=ticket.costo, biglietto=ticket, utente=user, cartaDiCredito=card)
             except IntegrityError:
-                return render_to_response("error.html", {"message": "Errore Transazione"})
+                return render_to_response("error.html", {"message": "Errore transazione"})
+            return redirect('/cards/')
 
-            return redirect('/tickets/') #Cambiare Poi su lista acquisti
-        else:
-            print("else pre")
-            form = CreditCardForm()
-            print("else post")
-        return render(request, 'add-card.html', {'form': form})
+    else:
+        print("else it pre")
+        form = BuyTicketForm(initial={'carta':CartaDiCredito.objects.filter(user_id=request.user.id)})
+        print("else it post")
+    return render(request, 'buy-ticket.html', {'form': form, 'ticket': ticket})

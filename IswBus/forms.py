@@ -25,5 +25,4 @@ class UserForm(forms.Form):
 
 
 class BuyTicketForm(forms.Form):
-    quantita = forms.ChoiceField(choices=[(x, x) for x in range(1, 9)])
-    carta = forms.ChoiceField(choices=CartaDiCredito.objects.filter(pk=request.user))
+    carta = forms.ModelChoiceField(queryset = CartaDiCredito.objects.all())

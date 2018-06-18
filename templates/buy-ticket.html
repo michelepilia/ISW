@@ -13,7 +13,7 @@
         <li>Costo: {{ ticket.costo }}</li>
     </ul>
 
-    <form action="available_tickets.html" method="post">
+    <form action="{{ ticket.get_url }}" method="post">
         {% csrf_token %}
         {{ form }}
 
