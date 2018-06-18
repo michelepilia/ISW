@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+        <h1>Modifica Carta di Credito</h1>
+
+        <form method="post" action="{{ card.get_url }}">
+            {% csrf_token %}
+            {{ form }}
+            <button type="submit">Salva</button>
+        </form>
+
+{% endblock %}

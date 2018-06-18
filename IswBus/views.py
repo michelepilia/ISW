@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import render, redirect, render_to_response, HttpResponseRedirect
+from django.shortcuts import render, redirect, render_to_response, HttpResponseRedirect, get_object_or_404
 from django.db import models, IntegrityError
 from IswBus.models import Biglietto
 from django.contrib.auth import login, authenticate, logout
@@ -72,7 +72,7 @@ def logout_view(request):
     print(1)
     logout(request)
     print(2)
-    #return render(request, 'login.html', {})
+    # return render(request, 'login.html', {})
     return HttpResponseRedirect('login')
 
 
@@ -80,3 +80,36 @@ def cards(request):
     user = request.user
     cards = CartaDiCredito.objects.filter(user_id=user.id)
     return render(request, "cards.html", {'cards': cards})
+
+
+@login_required
+def edit_card(request, cardId):
+    card = CartaDiCredito.objects.get(pk=cardId)
+    if request.method == 'POST':
+        form = CreditCardForm(request.POST)
+        print("is it valid?")
+        if form.is_valid():
+            card_number = form.cleaned_data['card_number']
+            expiration_month = form.cleaned_data['expiration_month']
+            expiration_year = form.cleaned_data['expiration_year']
+            cvv = form.cleaned_data['cvv']
+            try:
+                card.numero=card_number
+                card.mese_scadenza=expiration_month
+                card.anno_scadenza=expiration_year
+                card.cvv=cvv
+                card.pk=cardId
+                card.save(force_update=True)
+                print("FATTO!!!!")
+            except IntegrityError:
+                return render_to_response("error.html", {"message": "Carta di credito già esistente"})
+            return redirect('/cards/')
+
+    else:
+        print("else it pre")
+        form = CreditCardForm(initial={'card_number': card.numero,
+                                       'expiration_month': card.mese_scadenza,
+                                       'expiration_year': card.anno_scadenza,
+                                       'cvv': card.cvv})
+        print("else it post")
+    return render(request, 'edit-card.html', {'form': form, 'card': card})

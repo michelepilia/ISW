@@ -28,7 +28,7 @@ class CartaDiCredito(models.Model):
         return "Carta di Credito %s; Scadenza: %d/%d" % (self.numero, self.mese_scadenza, self.anno_scadenza)
 
     def get_url(self):
-        return "#"
+        return reverse('edit-card', args=[str(self.id)])
 
 
 @deconstructible
