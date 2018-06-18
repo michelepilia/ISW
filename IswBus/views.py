@@ -1,8 +1,8 @@
 from django.http import HttpResponse
-from django.shortcuts import render, redirect, render_to_response
+from django.shortcuts import render, redirect, render_to_response, HttpResponseRedirect
 from django.db import models, IntegrityError
 from IswBus.models import Biglietto
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 
@@ -32,11 +32,13 @@ def signup(request):
     return render(request, 'signup.html', {'form': form})
 
 
+@login_required
 def buy_ticket(request, ticketId):
     ticket = Biglietto.objects.get(pk=ticketId)
     return render(request, 'buy-ticket.html', {'ticket': ticket})
 
 
+@login_required
 def add_card(request):
     if request.method == 'POST':
         form = CreditCardForm(request.POST)
@@ -49,7 +51,8 @@ def add_card(request):
                 user1 = request.user
             else:
                 user1 = None
-            new_card = CartaDiCredito(numero=card_number, mese_scadenza=expiration_month, anno_scadenza=expiration_year, cvv=cvv, user=user1)
+            new_card = CartaDiCredito(numero=card_number, mese_scadenza=expiration_month, anno_scadenza=expiration_year,
+                                      cvv=cvv, user=user1)
             try:
                 new_card.save()
             except IntegrityError:
@@ -59,3 +62,12 @@ def add_card(request):
     else:
         form = CreditCardForm()
     return render(request, 'add-card.html', {'form': form})
+
+
+@login_required
+def logout_view(request):
+    print(1)
+    logout(request)
+    print(2)
+    #return render(request, 'login.html', {})
+    return HttpResponseRedirect('login')
