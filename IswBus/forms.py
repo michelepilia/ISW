@@ -23,3 +23,7 @@ class UserForm(forms.Form):
     nome = forms.CharField(label="Nome", max_length=50)
     cognome = forms.CharField(label="Cognome", max_length=50)
 
+
+class BuyTicketForm(forms.Form):
+    quantita = forms.ChoiceField(choices=[(x, x) for x in range(1, 9)])
+    carta = forms.ChoiceField(choices=CartaDiCredito.objects.filter(pk=request.user))
