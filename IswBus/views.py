@@ -96,11 +96,11 @@ def edit_card(request, cardId):
             expiration_year = form.cleaned_data['expiration_year']
             cvv = form.cleaned_data['cvv']
             try:
-                card.numero=card_number
-                card.mese_scadenza=expiration_month
-                card.anno_scadenza=expiration_year
-                card.cvv=cvv
-                card.pk=cardId
+                card.numero = card_number
+                card.mese_scadenza = expiration_month
+                card.anno_scadenza = expiration_year
+                card.cvv = cvv
+                card.pk = cardId
                 card.save(force_update=True)
             except IntegrityError:
                 return render_to_response("error.html", {"message": "Carta di credito già esistente"})
@@ -126,7 +126,8 @@ def buy_ticket_view(request, ticketId):
         if form.is_valid():
             card = form.cleaned_data['carta']
             try:
-                transazione = Transazione(data=timezone.now(), costo=ticket.costo, biglietto=ticket, utente=user, cartaDiCredito=card)
+                transazione = Transazione(data=timezone.now(), costo=ticket.costo, biglietto=ticket, utente=user,
+                                          cartaDiCredito=card)
                 transazione.save()
             except IntegrityError:
                 return render_to_response("error.html", {"message": "Errore transazione"})
@@ -135,6 +136,7 @@ def buy_ticket_view(request, ticketId):
     else:
         form = BuyTicketForm(request)
     return render(request, 'buy-ticket.html', {'form': form, 'ticket': ticket})
+
 
 def statistic_view(request):
     n = 30
@@ -145,5 +147,37 @@ def statistic_view(request):
     total = 0
     for transaction in transactions:
         total += transaction.costo
-    most_purchased = '1'
+    most_purchased = dict(models.tipo_biglietto).get(count_most_purchased(transactions))
+
     return render(request, 'statistics.html', {'number': number, 'total': total, 'most_purchased': most_purchased})
+
+
+def count_most_purchased(transactions):
+    uno = 0
+    due = 0
+    tre = 0
+    quattro = 0
+    cinque = 0
+    for transaction in transactions:
+        tipo = transaction.biglietto.tipologia
+        if tipo == "1":
+            uno += 1
+        if tipo == "2":
+            due += 1
+        if tipo == "3":
+            tre += 1
+        if tipo == "4":
+            quattro += 1
+        if tipo == "5":
+            cinque += 1
+    highest = max(uno, due, tre, quattro, cinque)
+    if highest == uno:
+        return "1"
+    if highest == due:
+        return "2"
+    if highest == tre:
+        return "3"
+    if highest == quattro:
+        return "4"
+    if highest == cinque:
+        return "5"
