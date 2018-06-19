@@ -30,4 +30,5 @@ urlpatterns = [
     url(r'^edit-card/(?P<cardId>\d+)/', views.edit_card, name="edit-card"),
     url(r'^transactions/', views.transactions_view, name="transactions"),
     url(r'^transaction/(?P<transactionId>\d+)/', views.transaction_detail_view, name="transaction"),
+    url(r'^statistics/', views.statistic_view, name="statistics"),
 ]

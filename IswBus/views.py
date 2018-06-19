@@ -5,7 +5,7 @@ from IswBus.models import Biglietto
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
-
+from datetime import datetime, timedelta
 from IswBus.models import *
 from IswBus.forms import *
 
@@ -130,8 +130,20 @@ def buy_ticket_view(request, ticketId):
                 transazione.save()
             except IntegrityError:
                 return render_to_response("error.html", {"message": "Errore transazione"})
-            return redirect('/cards/')
+            return redirect('/transactions/')
 
     else:
         form = BuyTicketForm(request)
     return render(request, 'buy-ticket.html', {'form': form, 'ticket': ticket})
+
+def statistic_view(request):
+    n = 30
+    a_month_ago = datetime.now() - timedelta(days=n)
+
+    transactions = Transazione.objects.filter(data__gte=a_month_ago, utente_id=request.user.id)
+    number = transactions.count()
+    total = 0
+    for transaction in transactions:
+        total += transaction.costo
+    most_purchased = '1'
+    return render(request, 'statistics.html', {'number': number, 'total': total, 'most_purchased': most_purchased})
