@@ -28,5 +28,6 @@ urlpatterns = [
     url(r'^logout/', views.logout_view, name='logout'),
     url(r'^cards/', views.cards, name='manage-card'),
     url(r'^edit-card/(?P<cardId>\d+)/', views.edit_card, name="edit-card"),
-
+    url(r'^transactions/', views.transactions_view, name="transactions"),
+    url(r'^transaction/(?P<transactionId>\d+)/', views.transaction_detail_view, name="transaction"),
 ]

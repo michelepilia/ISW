@@ -17,6 +17,20 @@ def tickets_view(request):
     return render(request, 'available_tickets.html', {'tickets': tickets})
 
 
+@login_required
+def transactions_view(request):
+    """A view of all transactions"""
+    transactions = Transazione.objects.filter(utente_id=request.user.id).order_by('data')
+    return render(request, 'transactions.html', {'transactions': transactions})
+
+
+@login_required
+def transaction_detail_view(request, transactionId):
+    """A view of all transactions"""
+    transaction = Transazione.objects.get(pk=transactionId)
+    return render(request, 'transaction_detail.html', {'transaction': transaction, 'ticket': transaction.biglietto})
+
+
 def signup(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)

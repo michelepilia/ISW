@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h1>Dettaglio Transazione</h1>
+
+    <h2>Dati Biglietto: </h2>
+
+    <ul>
+        <li>Nome biglietto: {{ ticket.nome }}</li>
+        <li>Giorni di validita: {{ ticket.validitaGiorni }}</li>
+        <li>Tipologia: {{ ticket.tipologia }}</li>
+        <li>Costo: {{ ticket.costo }}</li>
+    </ul>
+
+    <h2>Dati Transazione: </h2>
+
+    <ul>
+        <li>Data/Ora: {{ transaction.data }}</li>
+        <li>Carta: {{ transaction.cartaDiCredito.get_full_name }}</li>
+        <li>Costo: {{ transaction.costo }}</li>
+    </ul>
+
+
+{% endblock %}

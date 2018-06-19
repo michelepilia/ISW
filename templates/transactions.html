@@ -1,10 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block content %}
+
+        <h1>Biglietti Acquistati</h1>
+
+        <table>
+            <tr>
+                <th>Biglietto</th>
+                <th>Data</th>
+            </tr>
+
+            {% for transaction in transactions %}
+                <tr>
+                    <td><a href="{{ transaction.get_url }}">{{ transaction.biglietto.nome }}</a></td>
+                    <td>{{ transaction.data }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+{% endblock %}

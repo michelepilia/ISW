@@ -25,7 +25,7 @@ class CartaDiCredito(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
 
     def get_full_name(self):
-        return "Carta di Credito %s; Scadenza: %d/%d" % (self.numero, self.mese_scadenza, self.anno_scadenza)
+        return "Carta di Credito %s (Scadenza: %d/%d)" % (self.numero, self.mese_scadenza, self.anno_scadenza)
 
     def get_url(self):
         return reverse('edit-card', args=[str(self.id)])
@@ -56,3 +56,6 @@ class Transazione(models.Model):
 
     def __unicode__(self):
         return "%s, %s, %d" % (self.data, self.biglietto, self.costo)
+
+    def get_url(self):
+        return reverse('transaction', args=[str(self.id)])
