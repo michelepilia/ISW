@@ -36,7 +36,6 @@ def signup(request):
 def add_card(request):
     if request.method == 'POST':
         form = CreditCardForm(request.POST)
-        print("is valid?")
         if form.is_valid():
             card_number = form.cleaned_data['card_number']
             expiration_month = form.cleaned_data['expiration_month']
@@ -55,17 +54,13 @@ def add_card(request):
 
             return redirect('/cards/')
     else:
-        print("else pre")
         form = CreditCardForm()
-        print("else post")
     return render(request, 'add-card.html', {'form': form})
 
 
 @login_required
 def logout_view(request):
-    print(1)
     logout(request)
-    print(2)
     # return render(request, 'login.html', {})
     return HttpResponseRedirect('login')
 
@@ -81,7 +76,6 @@ def edit_card(request, cardId):
     card = CartaDiCredito.objects.get(pk=cardId)
     if request.method == 'POST':
         form = CreditCardForm(request.POST)
-        print("is it valid?")
         if form.is_valid():
             card_number = form.cleaned_data['card_number']
             expiration_month = form.cleaned_data['expiration_month']
@@ -94,18 +88,15 @@ def edit_card(request, cardId):
                 card.cvv=cvv
                 card.pk=cardId
                 card.save(force_update=True)
-                print("FATTO!!!!")
             except IntegrityError:
                 return render_to_response("error.html", {"message": "Carta di credito già esistente"})
             return redirect('/cards/')
 
     else:
-        print("else it pre")
         form = CreditCardForm(initial={'card_number': card.numero,
                                        'expiration_month': card.mese_scadenza,
                                        'expiration_year': card.anno_scadenza,
                                        'cvv': card.cvv})
-        print("else it post")
     return render(request, 'edit-card.html', {'form': form, 'card': card})
 
 
@@ -117,17 +108,16 @@ def buy_ticket_view(request, ticketId):
         user = None
     ticket = Biglietto.objects.get(pk=ticketId)
     if request.method == 'POST':
-        form = BuyTicketForm(request.POST, initial={'carta':CartaDiCredito.objects.filter(user_id=request.user.id)})
+        form = BuyTicketForm(request, request.POST)
         if form.is_valid():
             card = form.cleaned_data['carta']
             try:
-                Transazione(data=timezone.now, costo=ticket.costo, biglietto=ticket, utente=user, cartaDiCredito=card)
+                transazione = Transazione(data=timezone.now(), costo=ticket.costo, biglietto=ticket, utente=user, cartaDiCredito=card)
+                transazione.save()
             except IntegrityError:
                 return render_to_response("error.html", {"message": "Errore transazione"})
             return redirect('/cards/')
 
     else:
-        print("else it pre")
-        form = BuyTicketForm(initial={'carta':CartaDiCredito.objects.filter(user_id=request.user.id)})
-        print("else it post")
+        form = BuyTicketForm(request)
     return render(request, 'buy-ticket.html', {'form': form, 'ticket': ticket})
