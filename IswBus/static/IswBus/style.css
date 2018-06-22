@@ -1,0 +1,14 @@
+header {
+    background-color: #ff8000;
+    color: white;
+    text-shadow: 2px 2px #000000;
+    font-size: 40px;
+    font-weight: bold;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    padding-left: 15px;
+    height: 50px;
+    z-index: 1000;
+}
