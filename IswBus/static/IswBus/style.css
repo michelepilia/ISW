@@ -1,3 +1,10 @@
+body{
+    background-image: url("immagini/ctm_image.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
 header {
     background-color: #e0e0d1;
 }
@@ -10,9 +17,36 @@ header {
 
 ul#menu li{
     display: inline;
-}
-
-ul{
+    margin-left: 40px;
+    margin-right: 65px;
     text-align: center;
     text-align-last: justify;
+    padding-bottom: 10px;
+    font-family: Impact, Charcoal, sans-serif;
+}
+
+/*ul{
+    text-align: center;
+    text-align-last: justify;
+    padding-bottom: 10px;
+    font-family: Impact, Charcoal, sans-serif;
+}*/
+
+a{
+    color: darkblue;
+}
+
+#Biglietti_disponibili{
+    margin:auto;
+    text-align: center;
+    /*height: 200px;*/
+    padding:5px;
+    width: 400px;
+    margin-top: 100px;
+    background-color:#e0e0d1;
+}
+
+#tabella_biglietti{
+    margin: auto;
+    padding-bottom: 15px;
 }
