@@ -38,9 +38,9 @@ class Biglietto(models.Model):
     costo = models.DecimalField('Costo Biglietto', max_digits=5, decimal_places=2, default=1.50)
     tipologia = models.CharField('Tipo Biglietto', choices=tipo_biglietto, max_length=2, default="1")
 
-    def __unicode__(self):
-        return "%s (Tipo: %s, Validita: %d giorni) Prezzo: %d €" % (
-            self.nome, self.tipologia, self.validitaGiorni, self.costo)
+    def get_full_name(self):
+        return "%s (Tipo: %s, Validita: %d giorni) Prezzo: %.2f €" % (
+            self.nome, dict(tipo_biglietto)[self.tipologia], self.validitaGiorni, self.costo)
 
     def get_url(self):
         return reverse('buy-ticket', args=[str(self.id)])
@@ -54,7 +54,7 @@ class Transazione(models.Model):
     utente = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     cartaDiCredito = models.ForeignKey(CartaDiCredito, on_delete=models.DO_NOTHING, default=CartaDiCredito())
 
-    def __unicode__(self):
+    def get_full_name(self):
         return "%s, %s, %d" % (self.data, self.biglietto, self.costo)
 
     def get_url(self):

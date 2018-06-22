@@ -19,17 +19,6 @@ class CreditCardForm(forms.Form):
     cvv = forms.CharField(label="Codice CVV", max_length=3)
 
 
-
-class UserForm(forms.Form):
-    nome = forms.CharField(label="Nome", max_length=50)
-    cognome = forms.CharField(label="Cognome", max_length=50)
-
-
-class CardModelChoiceField(forms.ModelChoiceField):
-    def label_from_instance(self, obj):
-         return obj.get_full_name()
-
-
 class BuyTicketForm(forms.Form):
     carta = CardModelChoiceField(queryset=CartaDiCredito.objects.none(),
                                      label='Seleziona carta')
