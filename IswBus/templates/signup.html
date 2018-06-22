@@ -3,7 +3,7 @@
 <head>
     {% load static %}
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="style.css" media="screen">	
+    <link rel="stylesheet" href="{% static "IswBus/style.css" %}">
     <title>Bus Ticket ISW</title>
 </head>
 <body>
@@ -14,7 +14,6 @@
             <li>Sei già registrato? <a href="/login">Accedi</a></li>
         </ul>
     </header>
-
   <h2>Bus Ticket ISW: Sign up</h2>
   <form method="post" action="tickets/">
     {% csrf_token %}
