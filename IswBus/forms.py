@@ -15,7 +15,7 @@ class CardModelChoiceField(forms.ModelChoiceField):
 class CreditCardForm(forms.Form):
     card_number = forms.CharField(label="Numero Carta di Credito", max_length=16)
     expiration_month = forms.IntegerField(label="Mese di Scadenza", min_value=1, max_value=12)
-    expiration_year = forms.IntegerField(label="Anno di Scadenza", min_value=now.year)
+    expiration_year = forms.IntegerField(label="Anno di Scadenza", min_value=2010)
     cvv = forms.CharField(label="Codice CVV", max_length=3)
 
 
