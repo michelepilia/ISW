@@ -25,6 +25,13 @@ ul#menu li{
     font-family: Impact, Charcoal, sans-serif;
 }
 
+#link_home{
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    text-align-last: justify;
+}
+
 /*ul{
     text-align: center;
     text-align-last: justify;
@@ -51,7 +58,7 @@ a{
 }
 
 #Carte_di_credito{
-     margin:auto;
+    margin:auto;
     text-align: center;
     padding:5px;
     width: 400px;
@@ -66,4 +73,39 @@ a{
     width: 400px;
     margin-top: 100px;
     background-color:#e0e0d1;
+}
+
+.form{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#statistiche{
+    margin:auto;
+    text-align: center;
+    padding:5px;
+    width: 400px;
+    margin-top: 100px;
+    background-color:#e0e0d1;
+}
+
+#biglietti_acquistati{
+    margin:auto;
+    text-align: center;
+    padding:5px;
+    width: 400px;
+    margin-top: 100px;
+    background-color:#e0e0d1;
+}
+
+ul{
+    list-style: none;
+    text-align: initial;
+}
+
+table{
+    margin: auto;
+    padding-bottom: 15px;
+    text-align: center;
 }
