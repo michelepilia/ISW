@@ -9,40 +9,59 @@ from IswBus.forms import *
 from django.db import models, IntegrityError
 
 
-#Test sulla creazione dei biglietti
+# Test sulla creazione dei biglietti
 class BigliettoTest(TransactionTestCase):
 
     def setUp(self):
 
-        #Creazione biglietti
+        # Creazione biglietti
         dodici_corse = Biglietto(nome="Dodici Corse", validitaGiorni=12, costo=13.10, tipologia='3')
         annuale = Biglietto(nome="Abbonamento Annuale", validitaGiorni=365, costo=200.00, tipologia='5')
         mensile_studenti = Biglietto(nome="Abbonamento Mensile Studenti", validitaGiorni=30, costo=21.00, tipologia='1')
         singolo = Biglietto(nome="Corsa Singola", validitaGiorni=1, costo=1.30, tipologia='2')
+        integrato = Biglietto(nome="Corsa Singola Integrata 120 minuti", validitaGiorni=1, costo=2.00, tipologia='4')
+        mensile = Biglietto(nome="Abbonamento Mensile", validitaGiorni=30, costo=30.00, tipologia='1')
+        mensile_pensionati = Biglietto(nome="Abbonamento Mensile Pensionati", validitaGiorni=30, costo=25.00, tipologia='1')
 
-        #Salvataggio biglietti
+        # Salvataggio biglietti
         dodici_corse.save()
         annuale.save()
         mensile_studenti.save()
         singolo.save()
+        integrato.save()
+        mensile.save()
+        mensile_pensionati.save()
 
         self.obj_count = Biglietto.objects.all().count()
         self.dodici = dodici_corse
+        self.mensile = mensile
 
-    #Controllo di correttezza del numero di biglietti creati
+    # Controllo di correttezza del numero di biglietti creati
     def test_ticket_count(self):
-        self.assertEqual(self.obj_count, 4)
+        self.assertEqual(self.obj_count, 7)
 
-    #Controllo di correttezza del numero di biglietti creati (errato)
+    # Controllo di correttezza del numero di biglietti creati (errato)
     def test_ticket_count_wrong(self):
-        self.assertNotEqual(self.obj_count, 5)
+        self.assertNotEqual(self.obj_count, 6)
 
-    #Controllo sulla correttezza del nome del biglietto
+    # Controllo di correttezza del numero di biglietti creati (errato) 2
+    def test_ticket_count_wrong_2(self):
+        self.assertNotEqual(self.obj_count, 8)
+
+    # Controllo sulla correttezza del nome del biglietto
     def test_ticket_name(self):
         self.assertEqual(self.dodici.get_full_name(), "Dodici Corse (Tipo: Biglietto 12 Corse, Validita: 12 giorni) Prezzo: 13.10 €")
 
+    # Controllo sulla correttezza del nome del biglietto 2
+    def test_ticket_name_2(self):
+        self.assertEqual(self.mensile.get_full_name(), "Abbonamento Mensile (Tipo: Abbonamento Mensile, Validita: 30 giorni) Prezzo: 30.00 €")
 
-#Test sulla creazione delle carte di credito
+    # Controllo sulla correttezza del nome del biglietto (errato)
+    def test_ticket_name_wrong(self):
+        self.assertNotEqual(str(self.mensile), "Abbonamento Mensile (Tipo: Abbonamento Mensile, Validita: 20 giorni) Prezzo: 15.00 €")
+
+
+# Test sulla creazione delle carte di credito
 class CartaDiCreditoTest(TransactionTestCase):
 
     def setUp(self):
@@ -55,18 +74,18 @@ class CartaDiCreditoTest(TransactionTestCase):
         self.response = self.client.post('/login/', login_data, follow=True)
         self.user = self.response.context['user']
 
-        #Creazione carte di credito corrette
+        # Creazione carte di credito corrette
         mastercard_pilia = CartaDiCredito(numero='0123456789012345', mese_scadenza=1, anno_scadenza=2021, cvv='123', user=self.user)
         mastercard_pilia2 = CartaDiCredito(numero='5432109876543210', mese_scadenza=2, anno_scadenza=2022, cvv='321', user=self.user)
 
-        #Creazione carta di credito errata (viola vincolo unique)
+        # Creazione carta di credito errata (viola vincolo unique)
         mastercard_pilia_errata = CartaDiCredito(numero='5432109876543210', mese_scadenza=2, anno_scadenza=2015, cvv='421', user=self.user)
 
-        #Salvataggio carte
+        # Salvataggio carte
         mastercard_pilia.save()
         mastercard_pilia2.save()
 
-        #Test sull'aggiunta della carta errata
+        # Test sull'aggiunta della carta errata
         try:
             mastercard_pilia_errata.save()
         except IntegrityError:
@@ -75,12 +94,26 @@ class CartaDiCreditoTest(TransactionTestCase):
         self.card1 = mastercard_pilia
         self.card2 = mastercard_pilia2
 
-    #Test sul numero delle carte di credito
+    # Test sul numero delle carte di credito
     def test_card_number(self):
         self.assertEqual(len(CartaDiCredito.objects.all()), 2)
 
+    # Test sul numero delle carte di credito (errato)
     def test_card_number_wrong(self):
         self.assertNotEqual(self.obj_num, 3)
 
+    # Test sul numero delle carte di credito (errato) 2
+    def test_unit_card_num_wrong2(self):
+        self.assertNotEqual(self.obj_num, 1)
+
+    # Test sul nome delle carte di credito
     def test_unit_card_get_name(self):
         self.assertEqual(self.card1.get_full_name(), "Carta di Credito 0123456789012345 (Scadenza: 1/2021)")
+
+    # Test sul nome delle carte di credito 2
+    def test_unit_card_get_name2(self):
+        self.assertEqual(self.card2.get_full_name(), "Carta di Credito 5432109876543210 (Scadenza: 2/2022)")
+
+    # Test sul nome delle carte di credito (errato)
+    def test_unit_card_get_name_wrong(self):
+        self.assertNotEqual(self.card2.get_full_name(), "Carta di Credito 1111222233334444 (Scadenza: 11/2021)")
