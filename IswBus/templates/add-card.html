@@ -2,13 +2,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <div id="Aggiungi_carta">
 
         <h1>Aggiungi Carta di Credito</h1>
 
         <form method="post" action="/add_card/">
             {% csrf_token %}
-            {{ form }}
+            {{ form }}<br/><br/>
             <button type="submit">Salva</button>
         </form>
+    </div>
 
 {% endblock %}
