@@ -9,21 +9,45 @@ from django.db import transaction
 from IswBus.forms import *
 from django.db import models, IntegrityError
 
-class ModelTest(TransactionTestCase):
+
+class BigliettoTest(TransactionTestCase):
+
     def setUp(self):
-        user = User(username='mario', password='gatto')
-        user.save()
-
+        
         dodiciCorse = Biglietto(nome='dodiciCorse', validitaGiorni=10, costo=2.00, tipologia='3')
+        
         dodiciCorse.save()
+        self.dodici = dodiciCorse
+
+    def testTicketCount(self):                                
+        self.assertEqual(len(Biglietto.objects.all()), 1)
 
 
-        mastercardPilia = CartaDiCredito(numero='0123456789012345', mese_scadenza=1, anno_scadenza=21, cvv='123', user=user)
-        mastercardPilia2 = CartaDiCredito(numero='5432109876543210', mese_scadenza=2, anno_scadenza=22, cvv='321', user=user)
+
+class CartaDiCreditoTest(TransactionTestCase):
+
+    def setUp(self):
+        self.c = Client()
 
 
+        user_data = {'username': 'studente',
+                        'password1': '12345678pw',
+                        'password2': '12345678pw'}
+        self.client.post('/signup/', user_data)
 
-        mastercardPiliaErrata = CartaDiCredito(numero='5432109876543210', mese_scadenza=2, anno_scadenza=15, cvv='421', user=user)
+
+        login_data = {'username': 'studente', 'password': '12345678pw'}
+        self.response= self.client.post('/login/', login_data, follow=True)
+        self.user = self.response.context['user']
+
+
+        mastercardPilia = CartaDiCredito(numero='0123456789012345', mese_scadenza=1, anno_scadenza=2021, cvv='123',
+                                         user=self.user)
+        mastercardPilia2 = CartaDiCredito(numero='5432109876543210', mese_scadenza=2, anno_scadenza=2022, cvv='321',
+                                          user=self.user)
+        #Viola vincolo unique
+        mastercardPiliaErrata = CartaDiCredito(numero='5432109876543210', mese_scadenza=2, anno_scadenza=2015, cvv='421',
+                                               user=self.user)
         mastercardPilia.save()
         mastercardPilia2.save()
 
@@ -31,14 +55,11 @@ class ModelTest(TransactionTestCase):
             mastercardPiliaErrata.save()
         except IntegrityError:
             pass
-        try:
-            with transaction.atomic():
-                Transazione(data=datetime(2018, 6, 14, 15, 30, 00), costo=5.02, biglietto=dodiciCorse, utente=user, cartaDiCredito=mastercardPilia).save()
-        except IntegrityError:
-            pass
+        self.obj_num = CartaDiCredito.objects.all().count()
+        self.card1 = mastercardPilia
+        self.card2 = mastercardPilia2
 
-    def testFindModels(self):
-        self.assertEqual(len(Biglietto.objects.all()), 1)
+    def testUnitCardNumber(self):
         self.assertEqual(len(CartaDiCredito.objects.all()), 2)
-        self.assertEqual(len(Transazione.objects.all()), 1)
+        #self.assertEqual(len(Transazione.objects.all()), 1)
         #self.assertEqual(len(user.object.all()), 3)
