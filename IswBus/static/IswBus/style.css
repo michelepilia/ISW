@@ -15,6 +15,12 @@ header {
     text-align: center;
 }
 
+h1{
+    font-family: Impact, Charcoal, sans-serif;
+    color: darkorange;
+    text-align: center;
+}
+
 ul#menu li{
     display: inline;
     margin-left: 40px;
@@ -114,6 +120,15 @@ a{
     width: 600px;
     margin-top: 100px;
     background-color:#e0e0d1;
+}
+
+#form_registrazione{
+    margin:auto;
+    text-align: center;
+    padding:5px;
+    width: 400px;
+    margin-top: 100px;
+    background-color:#e0e0d1
 }
 
 ul{
