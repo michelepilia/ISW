@@ -1,2 +1,5 @@
 .idea
 virtualenv/
+db.sqlite3
+IswBus/__pycache__/
+IswBus/migrations/__pycache__/
