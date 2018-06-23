@@ -6,9 +6,10 @@
 
         <h1>Aggiungi Carta di Credito</h1>
 
-        <form method="post" action="/add_card/">
+        <form method="post" action="/add_card/" class="form">
             {% csrf_token %}
-            {{ form }}<br/><br/>
+            {{ form.as_ul }}
+            <br/><br/>
             <button type="submit">Salva</button>
         </form>
     </div>
