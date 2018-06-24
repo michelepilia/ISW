@@ -1,12 +1,7 @@
-import unittest
-
-from django.contrib.auth import authenticate
-from django.test import TestCase, Client, TransactionTestCase
+from django.test import Client, TransactionTestCase
 from IswBus.models import *
-from datetime import datetime
-from django.db import transaction
 from IswBus.forms import *
-from django.db import models, IntegrityError
+from django.db import IntegrityError
 
 
 # Test sulla creazione dei biglietti
