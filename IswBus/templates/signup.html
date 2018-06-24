@@ -8,27 +8,29 @@
 </head>
 <body>
 
-    <header>
-        <h1>ISW Bus Ticket</h1>
-        <ul>
-            <li>Sei già registrato? <a href="/login">Accedi</a></li>
-        </ul>
-    </header>
-  <h2>Bus Ticket ISW: Sign up</h2>
-  <form method="post" action="tickets/">
-    {% csrf_token %}
-    {% for field in form %}
-      <p>
-        {{ field.label_tag }}<br>
-        {{ field }}
-        {% if field.help_text %}
-        {% endif %}
-        {% for error in field.errors %}
-          <p style="color: red">{{ error }}</p>
+<header>
+    <h2>ISW Bus Ticket</h2>
+</header>
+<div id="form_registrazione">
+    <h2>Bus Ticket ISW: Sign up</h2>
+    <form method="post" action="tickets/">
+        {% csrf_token %}
+        {% for field in form %}
+            <p>
+                {{ field.label_tag }}<br>
+                {{ field }}
+                {% if field.help_text %}
+                {% endif %}
+                {% for error in field.errors %}
+                    <p style="color: red">{{ error }}</p>
+                {% endfor %}
+            </p>
         {% endfor %}
-      </p>
-    {% endfor %}
-    <button type="submit">Sign up</button>
-  </form>
+        <button type="submit">Sign up</button>
+    </form>
+    <ul>
+        <li>Sei già registrato?<br><a href="/login">Accedi</a></li>
+    </ul>
+</div>
 </body>
 </html>

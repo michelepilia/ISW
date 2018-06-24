@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div id="modifica_carta">
+        <h2>Modifica Carta di Credito</h2>
 
-        <h1>Modifica Carta di Credito</h1>
-
-        <form method="post" action="{{ card.get_url }}">
+        <form method="post" action="{{ card.get_url }}" class="form">
             {% csrf_token %}
-            {{ form }}
+            {{ form.as_ul }}
+            <br><br>
             <button type="submit">Salva</button>
         </form>
-
+</div>
 {% endblock %}
