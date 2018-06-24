@@ -208,6 +208,7 @@ class CreditCardFormTest(TestCase):  # Number vuoto
         self.assertTrue(form.is_valid())
 
 
+# Test per il controllo del corretto funzionamento delle transazioni
 class TransazioneTest(TransactionTestCase):
     def setUp(self):
         self.c = Client()
@@ -226,8 +227,11 @@ class TransazioneTest(TransactionTestCase):
         # Dati Carte
         mastercardPilia = CartaDiCredito(numero='0123456789012345', mese_scadenza=1, anno_scadenza=2021, cvv='123',
                                          user=self.user)
+        mastercardPilia2 = CartaDiCredito(numero='5432109876543210', mese_scadenza=2, anno_scadenza=2022, cvv='321',
+                                          user=self.user)
 
         mastercardPilia.save()
+        mastercardPilia2.save()
 
         #Dati Biglietti
         dodiciCorse = Biglietto(nome="Dodici Corse", validitaGiorni=12, costo=13.10, tipologia='3')
@@ -242,10 +246,26 @@ class TransazioneTest(TransactionTestCase):
                                    utente=self.user,
                                    cartaDiCredito=mastercardPilia)
 
+        transazione2 = Transazione(data=datetime(2015, 7, 14, 12, 30, 43, tzinfo=pytz.UTC),
+                                   costo=annuale.costo,
+                                   biglietto=annuale,
+                                   utente=self.user,
+                                   cartaDiCredito=mastercardPilia2)
+
         transazione1.save()
+        transazione2.save()
 
         self.tr_one = transazione1
         self.count = Transazione.objects.all().count()
 
+    # Si verifica che le transazioni siano 2
     def test_unit_transaction_count(self):
-        self.assertEqual(self.count, 1)
+        self.assertEqual(self.count, 2)
+
+    # Si verifica che le transazioni non siano 3
+    def test_unit_transaction_count_wrong(self):
+        self.assertNotEqual(self.count, 3)
+
+    # Si verifica che la transazione non sia una
+    def test_unit_transaction_count_wrong2(self):
+        self.assertNotEqual(self.count, 1)
