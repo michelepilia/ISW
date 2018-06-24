@@ -1,4 +1,4 @@
-from django.test import Client, TransactionTestCase
+from django.test import Client, TransactionTestCase, TestCase
 from IswBus.models import *
 from IswBus.forms import *
 from django.db import IntegrityError
@@ -112,3 +112,24 @@ class CartaDiCreditoTest(TransactionTestCase):
     # Test sul nome delle carte di credito (errato)
     def test_unit_card_get_name_wrong(self):
         self.assertNotEqual(self.card2.get_full_name(), "Carta di Credito 1111222233334444 (Scadenza: 11/2021)")
+
+
+# Test sul corretto funzionamento del form
+class CreditCardFormTest(TestCase):  # Number vuoto
+    # Controllo sull'inserimento di un numero di carta vuoto
+    def test_card_form_empty_number(self):
+        dati = {'card_number': '',
+                'expiration_month': '11',
+                'expiration_year': '2021',
+                'cvv': '123'}
+        form = CreditCardForm(dati)
+        self.assertFalse(form.is_valid())
+
+    # Controllo sul corretto inserimento di un mese di scadenza
+    def test_card_form_empty_month(self):
+        dati = {'card_number': '1111222233334444',
+                'expiration_month': '',
+                'expiration_year': '2021',
+                'cvv': '123'}
+        form = CreditCardForm(dati)
+        self.assertFalse(form.is_valid())
