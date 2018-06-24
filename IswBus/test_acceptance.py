@@ -169,3 +169,36 @@ class TestInserireCarta(TestCase):
         self.response = self.c.post('/add_card/', dati_carta, follow=True)
         self.assertContains(self.response, '3333666655553333')
         self.assertContains(self.response, 'Carte di Credito')
+
+
+# Test sulla correttezza del modifica carta
+class TestModificareCarta(TestCase):
+    def setUp(self):
+        self.c = Client()
+
+        user_data = {'username': 'studente',
+                     'password1': '12345678pw',
+                     'password2': '12345678pw'}
+        self.c.post('/signup/', user_data)
+
+        login_data = {'username': 'studente', 'password': '12345678pw'}
+        self.response = self.c.post('/login/', login_data, follow=True)
+        self.user = self.response.context['user']
+
+        mastercard_pilia = CartaDiCredito(numero='0123456789012345', mese_scadenza=1, anno_scadenza=2021, cvv='123', user=self.user)
+        mastercard_pilia2 = CartaDiCredito(numero='5432109876543210', mese_scadenza=2, anno_scadenza=2022, cvv='321', user=self.user)
+
+        mastercard_pilia.save()
+        mastercard_pilia2.save()
+
+        self.obj_num = CartaDiCredito.objects.all().count()
+        self.card1 = mastercard_pilia
+        self.card2 = mastercard_pilia2
+
+    # Test sulla vista iniziale (deve mostrare il dettaglio della carta, piu il bottone "Salva")
+    def test_initial_view(self):
+        self.id = self.card1.id
+        self.response = self.c.post('/edit-card/%d/' % self.id, follow=True)
+        self.assertContains(self.response, 'Modifica Carta di Credito')
+        self.assertContains(self.response, 'Numero Carta di Credito')
+        self.assertContains(self.response, 'Salva')
