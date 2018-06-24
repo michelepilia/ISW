@@ -2,7 +2,7 @@ from django.test import TestCase, Client
 
 
 # Test sul funzionamento del login
-from IswBus.models import CartaDiCredito
+from IswBus.models import CartaDiCredito, Biglietto
 
 
 class TestLogin(TestCase):
@@ -169,3 +169,49 @@ class TestInserireCarta(TestCase):
         self.response = self.c.post('/add_card/', dati_carta, follow=True)
         self.assertContains(self.response, '3333666655553333')
         self.assertContains(self.response, 'Carte di Credito')
+
+
+class TestAcquistaBiglietto(TestCase):
+    def setUp(self):
+        self.c = Client()
+
+        user1_data = {'username': 'studente',
+                      'password1': '12345678pw',
+                      'password2': '12345678pw'}
+
+        user2_data = {'username': 'alunno',
+                      'password1': '87654321pw',
+                      'password2': '87654321pw'}
+        self.c.post('/signup/', user1_data)
+        self.c.post('/signup/', user2_data)
+
+        login1_data = {'username': 'studente', 'password': '12345678pw'}
+        self.login2_data = {'username': 'alunno', 'password': '87654321pw'}
+        self.response1 = self.c.post('/login/', login1_data, follow=True)
+        self.user1 = self.response1.context['user']
+
+        mastercard_pilia = CartaDiCredito(numero='0123456789012345', mese_scadenza=1, anno_scadenza=2021, cvv='123',
+                                         user=self.user1)
+        mastercard_pilia2 = CartaDiCredito(numero='5432109876543210', mese_scadenza=2, anno_scadenza=2022, cvv='321',
+                                          user=self.user1)
+
+        mastercard_pilia.save()
+        mastercard_pilia2.save()
+
+        biglietto1 = Biglietto(nome="Dodici Corse", validitaGiorni=12, costo=13.00, tipologia='3')
+        biglietto2 = Biglietto(nome="Corsa Singola", validitaGiorni=1, costo=1.30, tipologia='1')
+
+        self.obj_num = CartaDiCredito.objects.all().count()
+        self.card1 = mastercard_pilia
+        self.card2 = mastercard_pilia2
+        self.ticket1 = biglietto1
+        self.ticket2 = biglietto2
+
+        biglietto1.save()
+        biglietto2.save()
+
+    # Si controlla la corretta visualizzazione dei due tipi di biglietti acquistabili
+    def test_initial_view(self):
+        self.response = self.c.post('/tickets/')
+        self.assertContains(self.response, 'Dodici Corse')
+        self.assertContains(self.response, 'Corsa Singola')

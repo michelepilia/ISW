@@ -225,13 +225,13 @@ class TransazioneTest(TransactionTestCase):
         self.user = self.response.context['user']
 
         # Dati Carte
-        mastercardPilia = CartaDiCredito(numero='0123456789012345', mese_scadenza=1, anno_scadenza=2021, cvv='123',
+        mastercard_pilia = CartaDiCredito(numero='0123456789012345', mese_scadenza=1, anno_scadenza=2021, cvv='123',
                                          user=self.user)
-        mastercardPilia2 = CartaDiCredito(numero='5432109876543210', mese_scadenza=2, anno_scadenza=2022, cvv='321',
+        mastercard_pilia2 = CartaDiCredito(numero='5432109876543210', mese_scadenza=2, anno_scadenza=2022, cvv='321',
                                           user=self.user)
 
-        mastercardPilia.save()
-        mastercardPilia2.save()
+        mastercard_pilia.save()
+        mastercard_pilia2.save()
 
         #Dati Biglietti
         dodiciCorse = Biglietto(nome="Dodici Corse", validitaGiorni=12, costo=13.10, tipologia='3')
@@ -244,13 +244,13 @@ class TransazioneTest(TransactionTestCase):
                                    costo=dodiciCorse.costo,
                                    biglietto=dodiciCorse,
                                    utente=self.user,
-                                   cartaDiCredito=mastercardPilia)
+                                   cartaDiCredito=mastercard_pilia)
 
         transazione2 = Transazione(data=datetime(2015, 7, 14, 12, 30, 43, tzinfo=pytz.UTC),
                                    costo=annuale.costo,
                                    biglietto=annuale,
                                    utente=self.user,
-                                   cartaDiCredito=mastercardPilia2)
+                                   cartaDiCredito=mastercard_pilia2)
 
         transazione1.save()
         transazione2.save()
@@ -286,11 +286,11 @@ class BuyTicketFormTest(TestCase):
         self.response = self.c.post('/login/', login_data, follow=True)
         self.user = self.response.context['user']
 
-        mastercardPilia = CartaDiCredito(numero='0123456789012345', mese_scadenza=1, anno_scadenza=2021, cvv='123',
+        mastercard_pilia = CartaDiCredito(numero='0123456789012345', mese_scadenza=1, anno_scadenza=2021, cvv='123',
                                          user=self.user)
 
-        mastercardPilia.save()
+        mastercard_pilia.save()
 
-        self.card = mastercardPilia
+        self.card = mastercard_pilia
 
         self.factory = RequestFactory()
