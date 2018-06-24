@@ -1,24 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static "IswBus/style.css" %}">
     <title>Bus Ticket ISW</title>
 </head>
 <body>
 
     <header>
         <h1>ISW Bus Ticket</h1>
-        <ul>
-            <li>Sei un nuovo utente? <a href="/signup">Registrati!</a></li>
-        </ul>
     </header>
 
-
+<div id="form_login">
   <h2>Login</h2>
   <form method="post" action="tickets/">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Login</button>
   </form>
+    <ul>
+        <li>Sei un nuovo utente? <br><a href="/signup">Registrati!</a></li>
+    </ul>
+</div>
 </body>
 </html>
