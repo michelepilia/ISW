@@ -151,3 +151,30 @@ class CreditCardFormTest(TestCase):  # Number vuoto
                 'cvv': ''}
         form = CreditCardForm(dati)
         self.assertFalse(form.is_valid())
+
+    # Si controlla che la lunghezza del numero della carta non superi le 16 cifre
+    def test_card_form_longer_number(self):
+        dati = {'card_number': '111122223333444455',  # 18 cifre
+                'expiration_month': '11',
+                'expiration_year': '2021',
+                'cvv': '123'}
+        form = CreditCardForm(dati)
+        self.assertFalse(form.is_valid())
+
+    # Si controlla che il numero equivalente al mese inserito non sia maggiore di 12
+    def test_card_form_higher_month(self):
+        dati = {'card_number': '1111222233334444',
+                'expiration_month': '13',
+                'expiration_year': '2021',
+                'cvv': '123'}
+        form = CreditCardForm(dati)
+        self.assertFalse(form.is_valid())
+
+    # Si controlla che il numero equivalente al mese inserito non sia minore di 1
+    def test_card_form_lower_month(self):
+        dati = {'card_number': '1111222233334444',
+                'expiration_month': '-1',
+                'expiration_year': '2021',
+                'cvv': '123'}
+        form = CreditCardForm(dati)
+        self.assertFalse(form.is_valid())
