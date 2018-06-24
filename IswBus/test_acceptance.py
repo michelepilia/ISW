@@ -1,8 +1,9 @@
 from django.test import TestCase, Client
+from IswBus.models import *
 
 
 # Test sul funzionamento del login
-from IswBus.models import CartaDiCredito, Biglietto
+from IswBus.models import CartaDiCredito, Biglietto, Transazione
 
 
 class TestLogin(TestCase):
@@ -261,3 +262,96 @@ class TestAcquistaBiglietto(TestCase):
         self.assertContains(self.response, 'Acquista Biglietto')
         self.assertNotContains(self.response, 'Carta di Credito')
         self.assertContains(self.response, 'Aggiungi Carta')
+
+
+class TestVisualizzaStatistiche(TestCase):
+    def setUp(self):
+        self.c = Client()
+
+        # Dati Utente
+        user_data = {'username': 'studente',
+                     'password1': '12345678pw',
+                     'password2': '12345678pw'}
+        self.c.post('/signup/', user_data)
+
+        login_data = {'username': 'studente', 'password': '12345678pw'}
+        self.response = self.c.post('/login/', login_data, follow=True)
+        self.user = self.response.context['user']
+
+        # Dati Carte
+        mastercard_pilia = CartaDiCredito(numero='0123456789012345', mese_scadenza=1, anno_scadenza=2021, cvv='123',
+                                         user=self.user)
+        mastercard_pilia2 = CartaDiCredito(numero='5432109876543210', mese_scadenza=2, anno_scadenza=2022, cvv='321',
+                                          user=self.user)
+
+        # Dati Biglietti
+        dodiciCorse = Biglietto(nome="Dodici Corse", validitaGiorni=12, costo=13.10, tipologia='3')
+        annuale = Biglietto(nome="Abbonamento Annuale", validitaGiorni=365, costo=200.00, tipologia='5')
+        mensile = Biglietto(nome="Abbonamento Mensile", validitaGiorni=30, costo=30.00, tipologia='1')
+        mensile_studenti = Biglietto(nome="Abbonamento Mensile Studenti", validitaGiorni=30, costo=26.00, tipologia='1')
+
+        mastercard_pilia.save()
+        mastercard_pilia2.save()
+
+        dodiciCorse.save()
+        annuale.save()
+        mensile_studenti.save()
+        mensile.save()
+
+        transazione1 = Transazione(data=timezone.now() + timezone.timedelta(days=-26),
+                                   costo=dodiciCorse.costo,
+                                   biglietto=dodiciCorse,
+                                   utente=self.user,
+                                   cartaDiCredito=mastercardPilia2)
+        transazione2 = Transazione(data=timezone.now() + timezone.timedelta(days=-10),
+                                   costo=annuale.costo,
+                                   biglietto=annuale,
+                                   utente=self.user,
+                                   cartaDiCredito=mastercardPilia2)
+        transazione3 = Transazione(data=timezone.now() + timezone.timedelta(days=-4),
+                                   costo=mensile.costo,
+                                   biglietto=mensile,
+                                   utente=self.user,
+                                   cartaDiCredito=mastercardPilia2)
+        transazione4 = Transazione(data=timezone.now() + timezone.timedelta(days=-17),
+                                   costo=mensile.costo,
+                                   biglietto=mensile,
+                                   utente=self.user,
+                                   cartaDiCredito=mastercardPilia)
+        transazione5 = Transazione(data=timezone.now() + timezone.timedelta(days=-45),
+                                   costo=mensile_studenti.costo,
+                                   biglietto=mensile_studenti,
+                                   utente=self.user,
+                                   cartaDiCredito=mastercardPilia)
+        transazione6 = Transazione(data=timezone.now() + timezone.timedelta(days=-50),
+                                   costo=dodiciCorse.costo,
+                                   biglietto=dodiciCorse,
+                                   utente=self.user,
+                                   cartaDiCredito=mastercardPilia2)
+
+        transazione1.save()
+        transazione2.save()
+        transazione3.save()
+        transazione4.save()
+        transazione5.save()
+        transazione6.save()
+
+        self.transazione1 = transazione1
+        self.transazione2 = transazione2
+        self.transazione3 = transazione3
+        self.transazione4 = transazione4
+        self.transazione5 = transazione5
+        self.transazione6 = transazione6
+
+        self.dodici = dodiciCorse
+        self.annuale = annuale
+        self.mensile = mensile
+        self.mensile_studenti = mensile_studenti
+
+    def test_view_statistics(self):
+        self.response = self.c.post('/statistics/')
+        self.assertContains(self.response, 'Statistiche ultimo mese')
+        self.assertContains(self.response, 'Numero biglietti acquistati: 4')
+        self.assertContains(self.response, 'Spesa effettuata: 273.10')
+        self.assertContains(self.response, 'Biglietto più acquistato: Abbonamento Mensile')
+        self.assertNotContains(self.response, 'Numero biglietti acquistati: 6')
