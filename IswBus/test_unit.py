@@ -133,3 +133,21 @@ class CreditCardFormTest(TestCase):  # Number vuoto
                 'cvv': '123'}
         form = CreditCardForm(dati)
         self.assertFalse(form.is_valid())
+
+    # Controllo sul corretto inserimento di un anno di scadenza
+    def test_card_form_empty_year(self):
+        dati = {'card_number': '1111222233334444',
+                'expiration_month': '11',
+                'expiration_year': '',
+                'cvv': '123'}
+        form = CreditCardForm(dati)
+        self.assertFalse(form.is_valid())
+
+    # Controllo sul corretto inserimento del CVV
+    def test_card_form_empty_cvv(self):
+        dati = {'card_number': '1111222233334444',
+                'expiration_month': '11',
+                'expiration_year': '2021',
+                'cvv': ''}
+        form = CreditCardForm(dati)
+        self.assertFalse(form.is_valid())
