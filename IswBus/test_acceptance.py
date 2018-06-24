@@ -197,6 +197,7 @@ class TestModificareCarta(TestCase):
     ''' 
     TO BE FIXED
     # Test sulla vista iniziale (deve mostrare il dettaglio della carta, piu il bottone "Salva")
+
     def test_initial_view(self):
         self.id = self.card1.id
         self.response = self.c.post('/edit-card/%d/' % self.id, follow=True)
@@ -264,6 +265,21 @@ class TestAcquistaBiglietto(TestCase):
         self.assertContains(self.response, 'Dodici Corse')
         self.assertContains(self.response, 'Corsa Singola')
 
+    def test_ticket_view(self):
+        self.response = self.c.post('/ticket/%d/' % self.ticket1.id)
+        self.assertContains(self.response, 'Acquista Biglietto')
+        self.assertContains(self.response, 'Carta di Credito 0123456789012345')
+        self.assertContains(self.response, 'Carta di Credito 5432109876543210')
+        self.assertContains(self.response, 'Acquista')
+        self.assertContains(self.response, 'Aggiungi Carta')
+
+    def test_ticket_view_user_without_card(self):
+        self.c.post('/logout/')
+        self.c.post('/login/', self.login2_data, follow=True)
+        self.response = self.c.post('/ticket/%d/' % self.ticket1.id)
+        self.assertContains(self.response, 'Acquista Biglietto')
+        self.assertNotContains(self.response, 'Carta di Credito')
+        self.assertContains(self.response, 'Aggiungi Carta')
 
 # Test correttezza viste transazioni
 class TestVisualizzaTransazioni(TestCase):
