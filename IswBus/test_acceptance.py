@@ -189,8 +189,11 @@ class TestModificareCarta(TestCase):
         mastercard_pilia2 = CartaDiCredito(numero='5432109876543210', mese_scadenza=2, anno_scadenza=2022, cvv='321', user=self.user)
 
         self.obj_num = CartaDiCredito.objects.all().count()
+        mastercard_pilia.save()
+        mastercard_pilia2.save()
         self.card1 = mastercard_pilia
         self.card2 = mastercard_pilia2
+
 
     # Test sulla vista iniziale (deve mostrare il dettaglio della carta, piu il bottone "Salva")
 
