@@ -48,3 +48,19 @@ class TestRegistrazione(TestCase):
     # Test sull'utente attivo (fallisci se non è attivo)
     def test_utente_attivo(self):
         self.failUnless(self.user.is_active)
+
+    # Test sulla registrazione
+    def test_registrazione_ok(self):
+        signup_data = {'username': 'luigi',
+                       'password1': 'rossirossi',
+                       'password2': 'rossirossi'}
+        self.response = self.client.post('/signup/', signup_data)
+        self.assertEqual(self.response.url, '/tickets/')
+
+    # Test sullo username già registrato
+    def test_signup_username_exist(self):
+        signup_data = {'username': 'studente',
+                       'password1': 'rossirossi',
+                       'password2': 'rossirossi'}
+        self.response = self.client.post('/signup/', signup_data)
+        self.assertContains(self.response, 'A user with that username already exists.')
