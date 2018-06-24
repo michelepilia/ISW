@@ -1,4 +1,3 @@
-import unittest
 from django.test import TestCase, Client
 
 
@@ -28,6 +27,24 @@ class TestLogin(TestCase):
             'password': 'sicuramentesbagliato'
         }
         response = self.c.post('/login/', self.not_valid_data, follow=True)
+        self.assertFalse(response.context['user'].is_active)
+
+    # Test sul login con username non registrato
+    def test_login_utente_non_esiste(self):
+        self.login_data = {
+            'username': 'nonesisto',
+            'password': 'miaomiao'
+        }
+        response = self.c.post('/login/', self.login_data, follow=True)
+        self.assertFalse(response.context['user'].is_active)
+
+    # Test sul login con password vuota
+    def test_login_pw_non_esiste(self):
+        self.login_data = {
+            'username': 'studente',
+            'password': ''
+        }
+        response = self.c.post('/login/', self.login_data, follow=True)
         self.assertFalse(response.context['user'].is_active)
 
 
@@ -64,3 +81,20 @@ class TestRegistrazione(TestCase):
                        'password2': 'rossirossi'}
         self.response = self.client.post('/signup/', signup_data)
         self.assertContains(self.response, 'A user with that username already exists.')
+
+    # Test sullo username non valido
+    def test_signup_username_not_valid(self):
+        signup_data = {'username': 'lui/*gi',
+                       'password1': 'rossirossi',
+                       'password2': 'rossirossi'}
+        self.response = self.client.post('/signup/', signup_data)
+        self.assertContains(self.response, 'Enter a valid username. This value may contain only letters, numbers, and @/./+/-/_ characters.')
+
+    # Test sulla password non ammessa (troppo semplice)
+    def test_signup_pw_too_common(self):
+        signup_data = {'username': 'studente12',
+                       'password1': '12345678',
+                       'password2': '12345678'}
+        self.response = self.client.post('/signup/', signup_data)
+
+        self.assertContains(self.response, 'This password is too common.')
