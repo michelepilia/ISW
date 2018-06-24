@@ -1,12 +1,9 @@
-from datetime import datetime
-
-import pytz
+from IswBus.models import *
 from django.test import TestCase, Client
-
-# Test sul funzionamento del login
 from IswBus.models import CartaDiCredito, Biglietto, Transazione
 
 
+# Test sul funzionamento del login
 class TestLogin(TestCase):
     def setUp(self):
         self.c = Client()
@@ -191,13 +188,14 @@ class TestModificareCarta(TestCase):
         mastercard_pilia2 = CartaDiCredito(numero='5432109876543210', mese_scadenza=2, anno_scadenza=2022, cvv='321', user=self.user)
 
         self.obj_num = CartaDiCredito.objects.all().count()
+
         self.card1 = mastercard_pilia
         self.card2 = mastercard_pilia2
 
-    ''' 
-    TO BE FIXED
+        mastercard_pilia.save()
+        mastercard_pilia2.save()
+    
     # Test sulla vista iniziale (deve mostrare il dettaglio della carta, piu il bottone "Salva")
-
     def test_initial_view(self):
         self.id = self.card1.id
         self.response = self.c.post('/edit-card/%d/' % self.id, follow=True)
@@ -218,7 +216,6 @@ class TestModificareCarta(TestCase):
         self.assertContains(self.response, 'Carte di Credito')
         self.assertContains(self.response, '4444777722220000')
         self.assertNotContains(self.response, '0123456789012345')
-    '''
 
 
 class TestAcquistaBiglietto(TestCase):
@@ -281,8 +278,8 @@ class TestAcquistaBiglietto(TestCase):
         self.assertNotContains(self.response, 'Carta di Credito')
         self.assertContains(self.response, 'Aggiungi Carta')
 
-# Test correttezza viste transazioni
-class TestVisualizzaTransazioni(TestCase):
+
+class TestVisualizzaStatistiche(TestCase):
     def setUp(self):
         self.c = Client()
 
@@ -297,48 +294,79 @@ class TestVisualizzaTransazioni(TestCase):
         self.user = self.response.context['user']
 
         # Dati Carte
-        mastercardPilia = CartaDiCredito(numero='0123456789012345', mese_scadenza=1, anno_scadenza=2021, cvv='123', user=self.user)
-        mastercardPilia2 = CartaDiCredito(numero='5432109876543210', mese_scadenza=2, anno_scadenza=2022, cvv='321', user=self.user)
-
-        mastercardPilia.save()
-        mastercardPilia2.save()
+        mastercard_pilia = CartaDiCredito(numero='0123456789012345', mese_scadenza=1, anno_scadenza=2021, cvv='123',
+                                         user=self.user)
+        mastercard_pilia2 = CartaDiCredito(numero='5432109876543210', mese_scadenza=2, anno_scadenza=2022, cvv='321',
+                                          user=self.user)
 
         # Dati Biglietti
         dodiciCorse = Biglietto(nome="Dodici Corse", validitaGiorni=12, costo=13.10, tipologia='3')
         annuale = Biglietto(nome="Abbonamento Annuale", validitaGiorni=365, costo=200.00, tipologia='5')
+        mensile = Biglietto(nome="Abbonamento Mensile", validitaGiorni=30, costo=30.00, tipologia='1')
+        mensile_studenti = Biglietto(nome="Abbonamento Mensile Studenti", validitaGiorni=30, costo=26.00, tipologia='1')
+
+        mastercard_pilia.save()
+        mastercard_pilia2.save()
 
         dodiciCorse.save()
         annuale.save()
+        mensile_studenti.save()
+        mensile.save()
 
-        transazione1 = Transazione(data=datetime(2017, 12, 6, 16, 29, 43, tzinfo=pytz.UTC),
+        transazione1 = Transazione(data=timezone.now() + timezone.timedelta(days=-26),
                                    costo=dodiciCorse.costo,
                                    biglietto=dodiciCorse,
                                    utente=self.user,
-                                   cartaDiCredito=mastercardPilia2)
-        transazione2 = Transazione(data=datetime(2015, 7, 14, 12, 30, 43, tzinfo=pytz.UTC),
+                                   cartaDiCredito=mastercard_pilia2)
+        transazione2 = Transazione(data=timezone.now() + timezone.timedelta(days=-10),
                                    costo=annuale.costo,
                                    biglietto=annuale,
                                    utente=self.user,
-                                   cartaDiCredito=mastercardPilia)
+                                   cartaDiCredito=mastercard_pilia2)
+        transazione3 = Transazione(data=timezone.now() + timezone.timedelta(days=-4),
+                                   costo=mensile.costo,
+                                   biglietto=mensile,
+                                   utente=self.user,
+                                   cartaDiCredito=mastercard_pilia2)
+        transazione4 = Transazione(data=timezone.now() + timezone.timedelta(days=-17),
+                                   costo=mensile.costo,
+                                   biglietto=mensile,
+                                   utente=self.user,
+                                   cartaDiCredito=mastercard_pilia)
+        transazione5 = Transazione(data=timezone.now() + timezone.timedelta(days=-45),
+                                   costo=mensile_studenti.costo,
+                                   biglietto=mensile_studenti,
+                                   utente=self.user,
+                                   cartaDiCredito=mastercard_pilia)
+        transazione6 = Transazione(data=timezone.now() + timezone.timedelta(days=-50),
+                                   costo=dodiciCorse.costo,
+                                   biglietto=dodiciCorse,
+                                   utente=self.user,
+                                   cartaDiCredito=mastercard_pilia)
+
         transazione1.save()
         transazione2.save()
+        transazione3.save()
+        transazione4.save()
+        transazione5.save()
+        transazione6.save()
 
         self.transazione1 = transazione1
-        self.tr_one = transazione1
-        self.tr_two = transazione2
-        self.count = Transazione.objects.all().count()
+        self.transazione2 = transazione2
+        self.transazione3 = transazione3
+        self.transazione4 = transazione4
+        self.transazione5 = transazione5
+        self.transazione6 = transazione6
 
-    # Verifica viste biglietti acquistati
-    def test_transazioni_view(self):
-        self.response = self.c.post('/transactions/', follow=True)
-        self.assertContains(self.response, 'Biglietti Acquistati')
-        self.assertContains(self.response, 'Dodici Corse')
-        self.assertContains(self.response, 'Abbonamento Annuale')
+        self.dodici = dodiciCorse
+        self.annuale = annuale
+        self.mensile = mensile
+        self.mensile_studenti = mensile_studenti
 
-    # Verifica viste dettagli transazione
-    def test_transazione_view(self):
-        self.response = self.c.post('/transaction/%d' % self.transazione1.id, follow=True)
-        self.assertContains(self.response, 'Dettaglio Transazione')
-        self.assertContains(self.response, 'Giorni di validita: 12')
-        self.assertContains(self.response, 'Dati Transazione')
-        self.assertContains(self.response, 'Carta: Carta di Credito 5432109876543210')
+    def test_view_statistics(self):
+        self.response = self.c.post('/statistics/')
+        self.assertContains(self.response, 'Statistiche ultimo mese')
+        self.assertContains(self.response, 'Numero biglietti acquistati: 4')
+        self.assertContains(self.response, 'Spesa effettuata: 273.10')
+        self.assertContains(self.response, 'Biglietto più acquistato: Abbonamento Mensile')
+        self.assertNotContains(self.response, 'Numero biglietti acquistati: 6')
