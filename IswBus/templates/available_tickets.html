@@ -15,8 +15,8 @@
             {% for ticket in tickets %}
                 <tr>
                     <td><a href="{{ ticket.get_url }}">{{ ticket.nome }}</a></td>
-                    <td>{{ ticket.tipologia }}</td>
-                    <td>{{ ticket.costo }}</td>
+                    <td>{{ ticket.get_tipologia_display }}</td>
+                    <td>{{ ticket.costo }} €</td>
                 </tr>
             {% endfor %}
         </table>

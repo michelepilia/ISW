@@ -9,8 +9,8 @@
     <ul>
         <li>Nome biglietto: {{ ticket.nome }}</li>
         <li>Giorni di validita: {{ ticket.validitaGiorni }}</li>
-        <li>Tipologia: {{ ticket.tipologia }}</li>
-        <li>Costo: {{ ticket.costo }}</li>
+        <li>Tipologia: {{ ticket.get_tipologia_display }}</li>
+        <li>Costo: {{ ticket.costo }} €</li>
     </ul>
 
     <h2>Dati Transazione: </h2>
@@ -18,7 +18,7 @@
     <ul>
         <li>Data/Ora: {{ transaction.data }}</li>
         <li>Carta: {{ transaction.cartaDiCredito.get_full_name }}</li>
-        <li>Costo: {{ transaction.costo }}</li>
+        <li>Costo: {{ transaction.costo }} €</li>
     </ul>
 
     </div>

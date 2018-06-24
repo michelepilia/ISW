@@ -3,6 +3,7 @@ body{
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 header {
@@ -158,4 +159,50 @@ table{
     margin: auto;
     padding-bottom: 15px;
     text-align: center;
+}
+
+ul#menu a {
+    padding: 5px 5px 0px 5px;
+}
+
+ul#menu a:visited, ul#menu a:link, ul#menu a:active{
+    color: #333333;
+    text-decoration: none;
+}
+
+ul#menu a:hover{
+    text-decoration: none;
+    border-bottom: 5px solid darkorange;
+}
+
+div#statistiche, div#Carte_di_credito, div#Aggiungi_carta, div#biglietti_acquistati, div#dettaglio_transazione, div#Biglietti_disponibili, div#form_login, div#form_registrazione, div#acquista_biglietto, div#modifica_carta {
+    border: 3px solid darkorange;
+    border-radius: 5px;
+}
+
+div#statistiche li{
+    margin-bottom: 5px;
+}
+
+div#Aggiungi_carta li {
+    margin-bottom: 5px;
+    padding-left: 10px;
+    text-align: left;
+}
+
+input#id_card_number, input#id_expiration_month, input#id_expiration_year, input#id_cvv{
+    width: 191px;
+    right: 0px;
+}
+
+input#id_expiration_month{
+    margin-left: 40px;
+}
+
+input#id_expiration_year{
+    margin-left: 40px;
+}
+
+input#id_cvv{
+    margin-left: 82px;
 }
