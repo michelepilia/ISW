@@ -1,3 +1,4 @@
+import pytz
 from django.test import Client, TransactionTestCase, TestCase
 from IswBus.models import *
 from IswBus.forms import *
@@ -114,7 +115,7 @@ class CartaDiCreditoTest(TransactionTestCase):
         self.assertNotEqual(self.card2.get_full_name(), "Carta di Credito 1111222233334444 (Scadenza: 11/2021)")
 
 
-# Test sul corretto funzionamento del form
+# Test sul corretto funzionamento del form della carta di credito
 class CreditCardFormTest(TestCase):  # Number vuoto
     # Controllo sull'inserimento di un numero di carta vuoto
     def test_card_form_empty_number(self):
@@ -205,3 +206,46 @@ class CreditCardFormTest(TestCase):  # Number vuoto
                 'cvv': '123'}
         form = CreditCardForm(dati)
         self.assertTrue(form.is_valid())
+
+
+class TransazioneTest(TransactionTestCase):
+    def setUp(self):
+        self.c = Client()
+
+        # Dati Utente
+        user_data = {'username': 'studente',
+                        'password1': '12345678pw',
+                        'password2': '12345678pw'}
+        self.client.post('/signup/', user_data)
+
+
+        login_data = {'username': 'studente', 'password': '12345678pw'}
+        self.response= self.client.post('/login/', login_data, follow=True)
+        self.user = self.response.context['user']
+
+        # Dati Carte
+        mastercardPilia = CartaDiCredito(numero='0123456789012345', mese_scadenza=1, anno_scadenza=2021, cvv='123',
+                                         user=self.user)
+
+        mastercardPilia.save()
+
+        #Dati Biglietti
+        dodiciCorse = Biglietto(nome="Dodici Corse", validitaGiorni=12, costo=13.10, tipologia='3')
+        annuale = Biglietto(nome="Abbonamento Annuale", validitaGiorni=365, costo=200.00, tipologia='5')
+
+        dodiciCorse.save()
+        annuale.save()
+
+        transazione1 = Transazione(data=datetime(2017, 12, 6, 16, 29, 43, tzinfo=pytz.UTC),
+                                   costo=dodiciCorse.costo,
+                                   biglietto=dodiciCorse,
+                                   utente=self.user,
+                                   cartaDiCredito=mastercardPilia)
+
+        transazione1.save()
+
+        self.tr_one = transazione1
+        self.count = Transazione.objects.all().count()
+
+    def test_unit_transaction_count(self):
+        self.assertEqual(self.count, 1)
