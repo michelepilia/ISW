@@ -48,6 +48,27 @@ class TestLogin(TestCase):
         self.assertFalse(response.context['user'].is_active)
 
 
+# Test sul corretto funzionamento del logout
+class TestLogout(TestCase):
+    def setUp(self):
+        self.c = Client()
+
+        user_data = {'username': 'studente',
+                     'password1': '12345678pw',
+                     'password2': '12345678pw'}
+        self.client.post('/signup/', user_data)
+
+        login_data = {'username': 'studente', 'password': '12345678pw'}
+        self.response = self.c.post('/login/', login_data, follow=True)
+        self.user = self.response.context['user']
+
+
+    def test_logout_success(self):
+        self.assertContains(self.response, 'Logout')
+        self.response = self.c.post('/logout/')
+        self.assertEquals(self.response.url, 'login')
+
+
 # Test sul funzionamento della registrazione
 class TestRegistrazione(TestCase):
     def setUp(self):
@@ -96,5 +117,4 @@ class TestRegistrazione(TestCase):
                        'password1': '12345678',
                        'password2': '12345678'}
         self.response = self.client.post('/signup/', signup_data)
-
         self.assertContains(self.response, 'This password is too common.')
