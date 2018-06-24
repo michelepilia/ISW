@@ -20,8 +20,7 @@ class CreditCardForm(forms.Form):
 
 
 class BuyTicketForm(forms.Form):
-    carta = CardModelChoiceField(queryset=CartaDiCredito.objects.none(),
-                                     label='Seleziona carta')
+    carta = CardModelChoiceField(queryset=CartaDiCredito.objects.none(), label='Seleziona carta')
 
     def __init__(self, request, *args, **kwargs):
         super(BuyTicketForm, self).__init__(*args, **kwargs)

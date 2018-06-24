@@ -1,5 +1,5 @@
 import pytz
-from django.test import Client, TransactionTestCase, TestCase
+from django.test import Client, TransactionTestCase, TestCase, RequestFactory
 from IswBus.models import *
 from IswBus.forms import *
 from django.db import IntegrityError
@@ -116,7 +116,7 @@ class CartaDiCreditoTest(TransactionTestCase):
 
 
 # Test sul corretto funzionamento del form della carta di credito
-class CreditCardFormTest(TestCase):  # Number vuoto
+class CreditCardFormTest(TestCase):
     # Controllo sull'inserimento di un numero di carta vuoto
     def test_card_form_empty_number(self):
         dati = {'card_number': '',
@@ -225,13 +225,13 @@ class TransazioneTest(TransactionTestCase):
         self.user = self.response.context['user']
 
         # Dati Carte
-        mastercardPilia = CartaDiCredito(numero='0123456789012345', mese_scadenza=1, anno_scadenza=2021, cvv='123',
+        mastercard_pilia = CartaDiCredito(numero='0123456789012345', mese_scadenza=1, anno_scadenza=2021, cvv='123',
                                          user=self.user)
-        mastercardPilia2 = CartaDiCredito(numero='5432109876543210', mese_scadenza=2, anno_scadenza=2022, cvv='321',
+        mastercard_pilia2 = CartaDiCredito(numero='5432109876543210', mese_scadenza=2, anno_scadenza=2022, cvv='321',
                                           user=self.user)
 
-        mastercardPilia.save()
-        mastercardPilia2.save()
+        mastercard_pilia.save()
+        mastercard_pilia2.save()
 
         #Dati Biglietti
         dodiciCorse = Biglietto(nome="Dodici Corse", validitaGiorni=12, costo=13.10, tipologia='3')
@@ -244,18 +244,19 @@ class TransazioneTest(TransactionTestCase):
                                    costo=dodiciCorse.costo,
                                    biglietto=dodiciCorse,
                                    utente=self.user,
-                                   cartaDiCredito=mastercardPilia)
+                                   cartaDiCredito=mastercard_pilia)
 
         transazione2 = Transazione(data=datetime(2015, 7, 14, 12, 30, 43, tzinfo=pytz.UTC),
                                    costo=annuale.costo,
                                    biglietto=annuale,
                                    utente=self.user,
-                                   cartaDiCredito=mastercardPilia2)
+                                   cartaDiCredito=mastercard_pilia2)
 
         transazione1.save()
         transazione2.save()
 
         self.tr_one = transazione1
+        self.tr_two = transazione2
         self.count = Transazione.objects.all().count()
 
     # Si verifica che le transazioni siano 2
@@ -269,3 +270,27 @@ class TransazioneTest(TransactionTestCase):
     # Si verifica che la transazione non sia una
     def test_unit_transaction_count_wrong2(self):
         self.assertNotEqual(self.count, 1)
+
+
+# Test sul corretto funzionamento del form di acquisto dei biglietti
+class BuyTicketFormTest(TestCase):
+    def setUp(self):
+        self.c = Client()
+
+        user_data = {'username': 'studente',
+                        'password1': '12345678pw',
+                        'password2': '12345678pw'}
+        self.c.post('/signup/', user_data)
+
+        login_data = {'username': 'studente', 'password': '12345678pw'}
+        self.response = self.c.post('/login/', login_data, follow=True)
+        self.user = self.response.context['user']
+
+        mastercard_pilia = CartaDiCredito(numero='0123456789012345', mese_scadenza=1, anno_scadenza=2021, cvv='123',
+                                         user=self.user)
+
+        mastercard_pilia.save()
+
+        self.card = mastercard_pilia
+
+        self.factory = RequestFactory()
