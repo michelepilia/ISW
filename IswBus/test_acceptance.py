@@ -30,6 +30,24 @@ class TestLogin(TestCase):
         response = self.c.post('/login/', self.not_valid_data, follow=True)
         self.assertFalse(response.context['user'].is_active)
 
+    # Test sul login con username non registrato
+    def test_login_utente_non_esiste(self):
+        self.login_data = {
+            'username': 'nonesisto',
+            'password': 'miaomiao'
+        }
+        response = self.c.post('/login/', self.login_data, follow=True)
+        self.assertFalse(response.context['user'].is_active)
+
+    # Test sul login con password vuota
+    def test_login_pw_non_esiste(self):
+        self.login_data = {
+            'username': 'studente',
+            'password': ''
+        }
+        response = self.c.post('/login/', self.login_data, follow=True)
+        self.assertFalse(response.context['user'].is_active)
+
 
 # Test sul funzionamento della registrazione
 class TestRegistrazione(TestCase):
