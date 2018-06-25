@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, render_to_response, HttpResponseRedirect, get_object_or_404
 from django.db import models, IntegrityError
 from IswBus.models import Biglietto
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login as auth_login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta
@@ -33,15 +33,19 @@ def transaction_detail_view(request, transactionId):
 
 def signup(request):
     if request.method == 'POST':
+        if request.user is not None:
+            logout(request)
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
-            login(request, user)
+            auth_login(request, user)
             return redirect('tickets')
     else:
+        if request.user is not None:
+            logout(request)
         form = UserCreationForm()
     return render(request, 'signup.html', {'form': form})
 
@@ -181,3 +185,11 @@ def count_most_purchased(transactions):
         return "4"
     if highest == cinque:
         return "5"
+
+
+def login(request):
+    if request.user is not None:
+        logout(request)
+        return redirect('/auth_login/')
+    else:
+        return redirect('/auth_login/')

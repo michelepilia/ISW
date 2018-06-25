@@ -20,8 +20,9 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^tickets/', views.tickets_view, name='tickets'),
-    url(r'^$', auth_views.login, name='login'),
-    url(r'^login/', auth_views.login, name='login'),
+    url(r'^$', views.login, name='login'),
+    url(r'^login/', views.login, name='login'),
+    url(r'^auth_login/', auth_views.login, name='auth_login'),
     url(r'^ticket/(?P<ticketId>\d+)/', views.buy_ticket_view, name="buy-ticket"),
     url(r'^signup/', views.signup, name='signup'),
     url(r'^add_card/', views.add_card, name='add-card'),
