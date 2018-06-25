@@ -294,3 +294,10 @@ class BuyTicketFormTest(TestCase):
         self.card = mastercard_pilia
 
         self.factory = RequestFactory()
+'''
+    def test_ok(self):
+        dati={
+            'carta': self.card.id
+        }
+        form = BuyTicketForm(dati)
+        self.assertTrue(form.is_valid())'''

@@ -7,6 +7,9 @@ from django.utils import timezone
 from datetime import datetime
 from django.utils.deconstruct import deconstructible
 
+'''
+    Tuple relative al tipo di biglietto
+'''
 tipo_biglietto = (
     ('1', 'Abbonamento Mensile'),
     ('2', 'Corsa singola 90 minuti'),
@@ -16,6 +19,9 @@ tipo_biglietto = (
 )
 
 
+'''
+    Classe carta di credito
+'''
 @deconstructible
 class CartaDiCredito(models.Model):
     numero = models.CharField("Numero Carta di Credito", max_length=16, default="1111222233334444", unique=True)
@@ -30,7 +36,9 @@ class CartaDiCredito(models.Model):
     def get_url(self):
         return reverse('edit-card', args=[str(self.id)])
 
-
+'''
+    Classe biglietto
+'''
 @deconstructible
 class Biglietto(models.Model):
     nome = models.CharField('Nome Biglietto', max_length=50, default="Name")
@@ -46,6 +54,9 @@ class Biglietto(models.Model):
         return reverse('buy-ticket', args=[str(self.id)])
 
 
+'''
+    Classe relativa alle transazioni
+'''
 @deconstructible
 class Transazione(models.Model):
     data = models.DateTimeField('Data Acquisto', default=timezone.now)

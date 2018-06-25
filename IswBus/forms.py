@@ -6,19 +6,25 @@ from django.contrib.auth.models import User
 
 now = datetime.now()
 
-
+'''
+    Sottoclasse di ModelChoiceField, per definire la visualizzazione della label
+'''
 class CardModelChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
          return obj.get_full_name()
 
-
+'''
+    Form Per inserimento carta
+'''
 class CreditCardForm(forms.Form):
     card_number = forms.CharField(label="Numero Carta di Credito", max_length=16)
     expiration_month = forms.IntegerField(label="Mese di Scadenza", min_value=1, max_value=12)
     expiration_year = forms.IntegerField(label="Anno di Scadenza", min_value=datetime.now().year)
     cvv = forms.CharField(label="Codice CVV", max_length=3)
 
-
+'''
+    Form acquisto biglietto
+'''
 class BuyTicketForm(forms.Form):
     carta = CardModelChoiceField(queryset=CartaDiCredito.objects.none(), label='Seleziona carta')
 

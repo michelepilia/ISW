@@ -10,6 +10,9 @@ from IswBus.models import *
 from IswBus.forms import *
 
 
+'''
+    Vista che si occupa di fornire la visualizzazione dei biglietti disponibili
+'''
 @login_required
 def tickets_view(request):
     """A view of all purchasable tickets"""
@@ -17,6 +20,9 @@ def tickets_view(request):
     return render(request, 'available_tickets.html', {'tickets': tickets})
 
 
+'''
+    Vista che si occupa di fornire l'elenco delle ultime transazioni
+'''
 @login_required
 def transactions_view(request):
     """A view of all transactions"""
@@ -24,16 +30,20 @@ def transactions_view(request):
     return render(request, 'transactions.html', {'transactions': transactions})
 
 
+'''
+    Vista -> Dettaglio transazione
+'''
 @login_required
 def transaction_detail_view(request, transactionId):
-    """A view of all transactions"""
     transaction = Transazione.objects.get(pk=transactionId)
     return render(request, 'transaction_detail.html', {'transaction': transaction, 'ticket': transaction.biglietto})
 
-
+'''
+    Gestione registrazione utente
+'''
 def signup(request):
     if request.method == 'POST':
-        if request.user is not None:
+        if request.user is not None: #se c'è un utente loggato effettua il logout
             logout(request)
         form = UserCreationForm(request.POST)
         if form.is_valid():
@@ -50,6 +60,9 @@ def signup(request):
     return render(request, 'signup.html', {'form': form})
 
 
+'''
+    vista-> Aggiunta carta di credito
+'''
 @login_required
 def add_card(request):
     if request.method == 'POST':
@@ -67,7 +80,7 @@ def add_card(request):
                                       cvv=cvv, user=user1)
             try:
                 new_card.save()
-            except IntegrityError:
+            except IntegrityError: #eccezione che gestisce un eventuale violazione del vincolo unique
                 return render_to_response("error.html", {"message": "Carta di credito già esistente"})
 
             return redirect('/cards/')
@@ -75,7 +88,9 @@ def add_card(request):
         form = CreditCardForm()
     return render(request, 'add-card.html', {'form': form})
 
-
+'''
+    Vista -> Logout
+'''
 @login_required
 def logout_view(request):
     logout(request)
@@ -83,12 +98,19 @@ def logout_view(request):
     return HttpResponseRedirect('login')
 
 
+'''
+    vista -> Carte disponibili utente
+'''
+@login_required
 def cards(request):
     user = request.user
     cards = CartaDiCredito.objects.filter(user_id=user.id)
     return render(request, "cards.html", {'cards': cards})
 
 
+'''
+    Vista per modificare una carta
+'''
 @login_required
 def edit_card(request, cardId):
     card = CartaDiCredito.objects.get(pk=cardId)
@@ -118,6 +140,10 @@ def edit_card(request, cardId):
     return render(request, 'edit-card.html', {'form': form, 'card': card})
 
 
+
+'''
+    Vista acquisto bigliettib
+'''
 @login_required
 def buy_ticket_view(request, ticketId):
     if request.user.is_authenticated:
@@ -141,7 +167,9 @@ def buy_ticket_view(request, ticketId):
         form = BuyTicketForm(request)
     return render(request, 'buy-ticket.html', {'form': form, 'ticket': ticket})
 
-
+'''
+    Vista statistiche acquisti
+'''
 def statistic_view(request):
     n = 30
     a_month_ago = datetime.now() - timedelta(days=n)
@@ -155,7 +183,9 @@ def statistic_view(request):
 
     return render(request, 'statistics.html', {'number': number, 'total': total, 'most_purchased': most_purchased})
 
-
+'''
+    Funzione per calcolare il tipo di biglietto più acquistato
+'''
 def count_most_purchased(transactions):
     uno = 0
     due = 0
@@ -186,7 +216,9 @@ def count_most_purchased(transactions):
     if highest == cinque:
         return "5"
 
-
+'''
+    Se esiste un utente loggato effettua il logout prima di reindirizzare alla vista auth.view.login
+'''
 def login(request):
     if request.user is not None:
         logout(request)
