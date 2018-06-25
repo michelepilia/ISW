@@ -1,3 +1,12 @@
+'''
+ISW Bus Ticket
+ISW-Gruppo-4-65215-65237-65205-65195
+65215 - Michele Pilia
+65237 - Massimo Zara
+65205 - Andrea Marotto
+65195 - Giulio Sprega
+'''
+
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, render_to_response, HttpResponseRedirect, get_object_or_404
 from django.db import models, IntegrityError

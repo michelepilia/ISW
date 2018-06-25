@@ -1,3 +1,12 @@
+'''
+ISW Bus Ticket
+ISW-Gruppo-4-65215-65237-65205-65195
+65215 - Michele Pilia
+65237 - Massimo Zara
+65205 - Andrea Marotto
+65195 - Giulio Sprega
+'''
+
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.db import models
