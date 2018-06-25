@@ -262,6 +262,7 @@ class TestAcquistaBiglietto(TestCase):
         self.assertContains(self.response, 'Dodici Corse')
         self.assertContains(self.response, 'Corsa Singola')
 
+    # Test sulla corretta visualizzazione delle possibili operazioni durante l'acquisto di un biglietto
     def test_ticket_view(self):
         self.response = self.c.post('/ticket/%d/' % self.ticket1.id)
         self.assertContains(self.response, 'Acquista Biglietto')
@@ -270,6 +271,10 @@ class TestAcquistaBiglietto(TestCase):
         self.assertContains(self.response, 'Acquista')
         self.assertContains(self.response, 'Aggiungi Carta')
 
+    '''
+    Test sulla visualizzazione delle possibili operazioni durante l'acquisto di un biglietto, quando non si possiede di
+    una carta di credito registrata
+    '''
     def test_ticket_view_user_without_card(self):
         self.c.post('/logout/')
         self.c.post('/login/', self.login2_data, follow=True)
@@ -278,7 +283,7 @@ class TestAcquistaBiglietto(TestCase):
         self.assertNotContains(self.response, 'Carta di Credito')
         self.assertContains(self.response, 'Aggiungi Carta')
 
-
+# Test sulla vista delle statistiche dell'ultimo mese
 class TestVisualizzaStatistiche(TestCase):
     def setUp(self):
         self.c = Client()
@@ -363,6 +368,7 @@ class TestVisualizzaStatistiche(TestCase):
         self.mensile = mensile
         self.mensile_studenti = mensile_studenti
 
+    # Test sulla vista delle statistiche dell'ultimo mese (biglietti acquistati, spesa totale e biglietto più acquistato)
     def test_view_statistics(self):
         self.response = self.c.post('/statistics/')
         self.assertContains(self.response, 'Statistiche ultimo mese')
