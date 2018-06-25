@@ -272,32 +272,3 @@ class TransazioneTest(TransactionTestCase):
         self.assertNotEqual(self.count, 1)
 
 
-# Test sul corretto funzionamento del form di acquisto dei biglietti
-class BuyTicketFormTest(TestCase):
-    def setUp(self):
-        self.c = Client()
-
-        user_data = {'username': 'studente',
-                        'password1': '12345678pw',
-                        'password2': '12345678pw'}
-        self.c.post('/signup/', user_data)
-
-        login_data = {'username': 'studente', 'password': '12345678pw'}
-        self.response = self.c.post('/login/', login_data, follow=True)
-        self.user = self.response.context['user']
-
-        mastercard_pilia = CartaDiCredito(numero='0123456789012345', mese_scadenza=1, anno_scadenza=2021, cvv='123',
-                                         user=self.user)
-
-        mastercard_pilia.save()
-
-        self.card = mastercard_pilia
-
-        self.factory = RequestFactory()
-'''
-    def test_ok(self):
-        dati={
-            'carta': self.card.id
-        }
-        form = BuyTicketForm(dati)
-        self.assertTrue(form.is_valid())'''
