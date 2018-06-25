@@ -106,7 +106,7 @@ class TestRegistrazione(TestCase):
         self.response = self.client.post('/signup/', signup_data)
         self.assertEqual(self.response.url, '/tickets/')
 
-    # Test sullo username già registrato
+    # Test sull' username già registrato
     def test_signup_username_exist(self):
         signup_data = {'username': 'studente',
                        'password1': 'rossirossi',
